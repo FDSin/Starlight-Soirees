@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
@@ -34,7 +34,7 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 16px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-    color: white;
+    color: #ffffff;
     animation: fadeInUp 0.8s ease-out forwards;
 }
 
@@ -43,9 +43,9 @@ body {
     margin-bottom: 30px;
 }
 
-login-header h1 {
+.login-header h1 {
     font-size: 26px;
-    font-weight: 600px;
+    font-weight: 600;
     letter-spacing: 1px;
     color: #f8fafc;
 }
@@ -71,9 +71,9 @@ login-header h1 {
 .input-group input {
     padding: 12px 16px;
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     background: rgba(15, 23, 42, 0.6);
-    color: white;
+    color: #fff;
     font-size: 14px;
     outline: none;
     transition: all 0.3s ease;
@@ -90,8 +90,8 @@ login-header h1 {
     margin-top: 10px;
     border: none;
     border-radius: 8px;
-    background: linear-gradient(135deg, #d97706, #b45309);
-    color: white;
+    background: linear-gradient(135deg, #d97706, #b45309); /* Gold/Amber button */
+    color: #ffffff;
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
@@ -108,4 +108,3 @@ login-header h1 {
     transform: translateY(1px);
     box-shadow: 0 4px 10px rgba(217, 119, 6, 0.2);
 }
-

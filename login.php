@@ -2,7 +2,7 @@
     session_start();
     require_once 'db.php';
 
-    if(isset($SESSION['user_id'])) {
+    if (isset($_SESSION['user_id'])) {
         header("Location: employee/employee_dashboard.php");
         exit();
     }
@@ -10,33 +10,32 @@
     $error = '';
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $email = trim($POST['email'] ?? '');
-        $password = trim($POST['password'] ?? '');
+        $username = trim($_POST['username'] ?? '');
+        $password = trim($_POST['password'] ?? '');
 
-        if (!empty($email) && !empty($password)) {
+        if (!empty($username) && !empty($password)) {
             try {
-                $stmt = $pdo->prepare("SELECT * FROM employees WHERE email = :email LIMIT 1");
-                $stmt->execute(['email' => $email]);
+                $stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username LIMIT 1");
+                $stmt->execute(['username' => $username]);
                 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                if ($user && password_verify ($password, $user['password'])) {
-                    $_SESSION['user_id'] = $user['id'];
-                    $_SESSION['user_name'] = $user['full_name'];
+                if ($user && password_verify($password, $user['password'])) {
+                    $_SESSION['user_id'] = $user['user_id'];
+                    $_SESSION['username'] = $user['username'];
 
                     header("Location: employee/employee_dashboard.php");
                     exit();
                 } else {
                     $error = "Invalid email or password.";
                 }
-            }catch (PDOException $e) {
-                    $error = "Database error: " . $e->getMessage();
+            } catch (PDOException $e) {
+                $error = "Database error: " . $e->getMessage();
             }
         } else {
-        $error = "Please fill in all necessary fields.";
+            $error = "Please fill in all necessary fields.";
         }
     }
 ?>
-
 
 <!DOCTYPE html>
 <html>
@@ -48,7 +47,6 @@
         <section class="login-card">
             <header>
                 <h1>Starlight Soirées</h1>
-                <p>Operations Portal</p>
             </header>
 
             <?php if (!empty($error)): ?>
@@ -66,13 +64,13 @@
 
             <form action="login.php" method="POST">
                 <div class="input-group">
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" placeholder="Please enter email address" required>
+                    <label for="username">Email:</label>
+                    <input type="text" id="username" name="username" placeholder="name@example.com" required>
                 </div>
 
                 <div class="input-group">
                     <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" placeholder="Please enter password" required>
+                    <input type="password" id="password" name="password" placeholder="Enter password" required>
                 </div>
 
                 <button type="submit" class="btn-login">Login</button>
