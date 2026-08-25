@@ -1,64 +1,26 @@
-
 <?php
 session_start();
-require_once '../check_auth.php';
+require_once __DIR__ . '/../check_auth.php';
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../login.php");
-    exit();
+    header('Location: ../login.php'); exit;
 }
-?>
 
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Employee Dashboard - Starlight Soirées</title>
-        <link rel="stylesheet" href="../css/dashboard_style.css">
-    </head>
-    <body>
-        <aside class="sidebar">
-            <ul class="sidebar-nav">
-                <li><a href="#" class="active">Home</a></li>
-                <li><a href="#">Events</a></li>
-                <li><a href="#">Venue</a></li>
-                <li><a href="#">Food & Catering</a></li>
-                <li><a href="#">Payment</a></li>
-                <li><a href="#">Report</a></li>
-            </ul>
-            <a href="../logout.php"
-            style="color: #ef4444;
-            text-decoration: none; 
-            padding-left: 16px;">Logout</a>
-        </aside>
+require_once __DIR__ . '/../db.php';
+$activeEvents = 0;
+$pendingTasks = 0;
+try {
+    $stmt = $pdo->query("SHOW TABLES LIKE 'events'");
+    if ($stmt && $stmt->rowCount() > 0) {
+        $eventStmt = $pdo->query('SELECT COUNT(*) AS total FROM events WHERE status = "Active"');
+        $eventRow = $eventStmt->fetch();
+        $activeEvents = (int)($eventRow['total'] ?? 0);
 
-        <div class="main-wrapper">
-            <header class="top-header">
-                <h2>Dashboard</h2>
-                <div class="user-profile">
-                    <div class="user-avatar">
-                        <?= strtoupper(substr($_SESSION['username'], 0, 1)) ?>
-                    </div>
-                    <span><?= htmlspecialchars($_SESSION['username']) ?></span>
-                </div>
-            </header>
-
-            <main class="dashboard-content">
-                <div class="card">
-                    <h3 class="card-title">Active Events</h3>
-                    <p style="font-size: 28px;
-                        font-weight: 700;
-                        color: var(--primary-navy);">12</p>
-                </div>
-                <div class="card">
-                    <h3 class="card-tile">Pending Tasks</h3>
-                    <p style="font-size: 28px;
-                    font-weight: 700;
-                    color: var(--text-gold);">5</p>
-                </div>
-                <div class="card">
-                    <h3 class="card-title">Quick Actions</h3>
-                    <button class="'btn-action">New Event</button>
-                </div>
-            </main>
-        </div>
-    </body>
-</html>
+        $pendingStmt = $pdo->query('SELECT COUNT(*) AS total FROM events WHERE status = "Pending"');
+        $pendingRow = $pendingStmt->fetch();
+        $pendingTasks = (int)($pendingRow['total'] ?? 0);
+    }
+} catch (Exception $e) {
+    $activeEvents = 0;
+    $pendingTasks = 0;
+}
+include __DIR__ . '/views/dashboard.html';

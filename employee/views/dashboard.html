@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee Dashboard - Starlight Soirées</title>
+    <link rel="stylesheet" href="../css/dashboard_style.css">
+</head>
+<body>
+    <?php require_once __DIR__ . '/../../sidebar.php'; ?>
+    <div class="main-wrapper">
+        <header class="top-header">
+            <h2>Dashboard</h2>
+            <div class="user-profile">
+                <div class="user-avatar"><?= strtoupper(substr($_SESSION['username'] ?? 'U', 0, 1)) ?></div>
+                <span><?= htmlspecialchars($_SESSION['username'] ?? '') ?></span>
+            </div>
+        </header>
+
+        <main class="dashboard-content">
+            <div class="card">
+                <h3 class="card-title">Active Events</h3>
+                <p class="count-number primary-count"><?= htmlspecialchars($activeEvents ?? 0) ?></p>
+            </div>
+            <div class="card">
+                <h3 class="card-title">Pending Tasks</h3>
+                <p class="count-number gold-count"><?= htmlspecialchars($pendingTasks ?? 0) ?></p>
+            </div>
+            <div class="card">
+                <h3 class="card-title">Quick Actions</h3>
+                <a href="add_event.php" class="btn-primary">New Event</a>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
+

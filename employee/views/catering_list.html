@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Food & Catering - Starlight Soirées</title>
+    <link rel="stylesheet" href="../css/dashboard_style.css">
+</head>
+<body>
+    <?php require_once __DIR__ . '/../../sidebar.php'; ?>
+    <div class="main-wrapper">
+        <header class="top-header"><h2>Food & Catering</h2></header>
+        <main style="padding:20px;">
+            <a href="add_catering.php" class="btn-primary" style="margin-bottom:12px; display:inline-block;">+ Add Catering</a>
+            <?php if (!empty($error)): ?><div class="error"><?= htmlspecialchars($error) ?></div><?php endif; ?>
+            <?php if (empty($catering)): ?>
+                <div class="form-card">No catering items found. Ensure your <code>catering</code> table exists and has id, name, details, price.</div>
+            <?php else: ?>
+                <table class="table">
+                    <thead><tr><th>Name</th><th>Price</th><th>Actions</th></tr></thead>
+                    <tbody>
+                        <?php foreach ($catering as $c): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($c['name']) ?></td>
+                                <td><?= htmlspecialchars($c['price']) ?></td>
+                                <td>
+                                    <a href="view_catering.php?id=<?= (int)$c['id'] ?>">View</a> |
+                                    <a href="edit_catering.php?id=<?= (int)$c['id'] ?>">Edit</a> |
+                                    <form method="POST" action="admin_food.php" style="display:inline;">
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="id" value="<?= (int)$c['id'] ?>">
+                                        <button type="submit" class="btn-danger" onclick="return confirm('Delete this item?')">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php endif; ?>
+        </main>
+    </div>
+</body>
+</html>
+

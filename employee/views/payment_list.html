@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment - Starlight Soirées</title>
+    <link rel="stylesheet" href="../css/dashboard_style.css">
+</head>
+<body>
+    <?php require_once __DIR__ . '/../../sidebar.php'; ?>
+    <div class="main-wrapper">
+        <header class="top-header"><h2>Payment</h2></header>
+        <main style="padding:20px;">
+            <a href="add_payment.php" class="btn-primary" style="margin-bottom:12px; display:inline-block;">+ Add Payment</a>
+            <?php if (!empty($error)): ?><div class="error"><?= htmlspecialchars($error) ?></div><?php endif; ?>
+            <?php if (empty($payments)): ?>
+                <div class="form-card">No payments found. Ensure your <code>payments</code> table exists and has id, event_id, amount, date, status.</div>
+            <?php else: ?>
+                <table class="table">
+                    <thead><tr><th>Event ID</th><th>Amount</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody>
+                        <?php foreach ($payments as $p): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($p['event_id']) ?></td>
+                                <td><?= htmlspecialchars($p['amount']) ?></td>
+                                <td><?= htmlspecialchars($p['date']) ?></td>
+                                <td><?= htmlspecialchars($p['status']) ?></td>
+                                <td>
+                                    <a href="view_payment.php?id=<?= (int)$p['id'] ?>">View</a> |
+                                    <a href="edit_payment.php?id=<?= (int)$p['id'] ?>">Edit</a> |
+                                    <form method="POST" action="admin_payment.php" style="display:inline;">
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="id" value="<?= (int)$p['id'] ?>">
+                                        <button type="submit" class="btn-danger" onclick="return confirm('Delete this payment?')">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php endif; ?>
+        </main>
+    </div>
+</body>
+</html>
+

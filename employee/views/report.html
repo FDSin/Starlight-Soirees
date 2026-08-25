@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reports - Starlight Soirées</title>
+    <link rel="stylesheet" href="../css/dashboard_style.css">
+</head>
+<body>
+    <?php require_once __DIR__ . '/../../sidebar.php'; ?>
+    <div class="main-wrapper">
+        <header class="top-header"><h2>Reports</h2></header>
+        <main style="padding:20px;">
+            <form method="GET" style="margin-bottom:12px;">
+                <label>From: <input type="date" name="from" value="<?= htmlspecialchars($from ?? '') ?>"></label>
+                <label>To: <input type="date" name="to" value="<?= htmlspecialchars($to ?? '') ?>"></label>
+                <button type="submit">Generate Report</button>
+                <button type="button" onclick="window.print()">Print Report</button>
+            </form>
+            <?php if (!empty($error)): ?><div class="error"><?= htmlspecialchars($error) ?></div><?php endif; ?>
+            <?php if (!empty($reportData)): ?>
+                <table class="table">
+                    <thead><tr><th>Event</th><th>Date</th><th>Venue</th><th>Status</th></tr></thead>
+                    <tbody>
+                        <?php foreach ($reportData as $r): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($r['name']) ?></td>
+                                <td><?= htmlspecialchars($r['date']) ?></td>
+                                <td><?= htmlspecialchars($r['venue']) ?></td>
+                                <td><?= htmlspecialchars($r['status']) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php else: ?>
+                <div class="form-card">No data for that date range, or the <code>events</code> table does not exist.</div>
+            <?php endif; ?>
+        </main>
+    </div>
+</body>
+</html>
+
