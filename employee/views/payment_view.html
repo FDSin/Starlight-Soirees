@@ -13,11 +13,11 @@
                 <div class="form-row"><strong>Event ID:</strong> <?= htmlspecialchars($p['event_id'] ?? '') ?></div>
                 <div class="form-row"><strong>Amount:</strong> <?= htmlspecialchars($p['amount'] ?? '') ?></div>
                 <div class="form-row"><strong>Date:</strong> <?= htmlspecialchars($p['date'] ?? '') ?></div>
-                <div class="form-row"><strong>Status:</strong> <?= htmlspecialchars($p['status'] ?? '') ?></div>
-                <div class="form-actions"><a href="edit_payment.php?id=<?= (int)($p['id'] ?? 0) ?>">Edit</a> <a href="admin_payment.php">Back</a></div>
+                <div class="form-row"><strong>Payment Method:</strong> <?= htmlspecialchars($p['payment_method'] ?? '') ?></div>
+                <div class="form-row"><strong>Status:</strong> <?= htmlspecialchars(ucfirst((string)($p['status'] ?: 'pending'))) ?></div>
+                <div class="form-actions"><a href="edit_payment.php?id=<?= (int)($p['payment_id'] ?? 0) ?>">Edit</a> <a href="admin_payment.php">Back</a></div>
             </div>
         </main>
     </div>
 </body>
 </html>
-

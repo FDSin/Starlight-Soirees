@@ -12,10 +12,10 @@ try {
     $res = $pdo->query("SHOW TABLES LIKE 'events'");
     if ($res && $res->rowCount() > 0) {
         if ($from && $to) {
-            $stmt = $pdo->prepare('SELECT id, name, date, venue, status FROM events WHERE date BETWEEN :from AND :to ORDER BY date');
+            $stmt = $pdo->prepare('SELECT e.event_id, e.title, e.event_date, e.status, v.name AS venue_name FROM events e LEFT JOIN venues v ON v.venue_id = e.venue_id WHERE e.event_date BETWEEN :from AND :to ORDER BY e.event_date');
             $stmt->execute(['from' => $from, 'to' => $to]);
         } else {
-            $stmt = $pdo->query('SELECT id, name, date, venue, status FROM events ORDER BY date');
+            $stmt = $pdo->query('SELECT e.event_id, e.title, e.event_date, e.status, v.name AS venue_name FROM events e LEFT JOIN venues v ON v.venue_id = e.venue_id ORDER BY e.event_date');
         }
         $reportData = $stmt->fetchAll();
     }
