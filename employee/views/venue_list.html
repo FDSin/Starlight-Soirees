@@ -9,10 +9,11 @@
     <div class="main-wrapper">
         <header class="top-header"><h2>Venue</h2></header>
         <main style="padding:20px;">
-            <a href="add_venue.php" class="btn-primary" style="margin-bottom:12px; display:inline-block;">+ Add Venue</a>
+            <a href="add_venue.php" class="btn-primary">+ Add Venue</a>
+            <form method="GET" class="filter-form"><input type="search" name="search" placeholder="Search venue" value="<?= htmlspecialchars($search ?? '') ?>"><button type="submit" class="btn-primary">Search</button></form>
             <?php if (!empty($error)): ?><div class="error"><?= htmlspecialchars($error) ?></div><?php endif; ?>
             <?php if (empty($venues)): ?>
-                <div class="form-card">No venues found. Ensure your <code>venues</code> table exists and has id, name, address, capacity.</div>
+                <div class="form-card">No venues found.</div>
             <?php else: ?>
                 <table class="table">
                     <thead><tr><th>Name</th><th>Address</th><th>Capacity</th><th>Actions</th></tr></thead>
@@ -23,11 +24,11 @@
                                 <td><?= htmlspecialchars($v['address']) ?></td>
                                 <td><?= htmlspecialchars($v['capacity']) ?></td>
                                 <td>
-                                    <a href="view_venue.php?id=<?= (int)$v['id'] ?>">View</a> |
-                                    <a href="edit_venue.php?id=<?= (int)$v['id'] ?>">Edit</a> |
+                                    <a href="view_venue.php?id=<?= (int)$v['venue_id'] ?>">View</a> |
+                                    <a href="edit_venue.php?id=<?= (int)$v['venue_id'] ?>">Edit</a> |
                                     <form method="POST" action="admin_venue.php" style="display:inline;">
                                         <input type="hidden" name="action" value="delete">
-                                        <input type="hidden" name="id" value="<?= (int)$v['id'] ?>">
+                                        <input type="hidden" name="venue_id" value="<?= (int)$v['venue_id'] ?>">
                                         <button type="submit" class="btn-danger" onclick="return confirm('Delete this venue?')">Delete</button>
                                     </form>
                                 </td>
@@ -40,4 +41,3 @@
     </div>
 </body>
 </html>
-

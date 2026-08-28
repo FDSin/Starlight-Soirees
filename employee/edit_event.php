@@ -10,29 +10,33 @@ $pageTitle = 'Edit Event';
 $actionUrl = 'edit_event.php?id=' . $id;
 $error = '';
 
-$stmt = $pdo->prepare('SELECT id, name, date, venue, status FROM events WHERE id = :id LIMIT 1');
-$stmt->execute(['id' => $id]);
+$stmt = $pdo->prepare('SELECT event_id, title, description, venue_id, event_date, event_time, status FROM events WHERE event_id = :event_id LIMIT 1');
+$stmt->execute(['event_id' => $id]);
 $event = $stmt->fetch();
 if (!$event) { header('Location: admin_events.php'); exit; }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = trim($_POST['name'] ?? '');
-    $event['name'] = $name;
-    $event['date'] = $_POST['date'] ?? '';
-    $event['venue'] = trim($_POST['venue'] ?? '');
-    $event['status'] = $_POST['status'] ?? 'Pending';
+    $title = trim($_POST['title'] ?? '');
+    $event['title'] = $title;
+    $event['description'] = trim($_POST['description'] ?? '');
+    $event['venue_id'] = (int)($_POST['venue_id'] ?? 0);
+    $event['event_date'] = $_POST['event_date'] ?? '';
+    $event['event_time'] = $_POST['event_time'] ?? '';
+    $event['status'] = $_POST['status'] ?? 'planned';
 
-    if ($name === '') {
+    if ($title === '') {
         $error = 'Event name is required.';
     } else {
         try {
-            $stmt = $pdo->prepare('UPDATE events SET name = :name, date = :date, venue = :venue, status = :status WHERE id = :id');
+            $stmt = $pdo->prepare('UPDATE events SET title = :title, description = :description, venue_id = :venue_id, event_date = :event_date, event_time = :event_time, status = :status WHERE event_id = :event_id');
             $stmt->execute([
-                'name' => $name,
-                'date' => $event['date'],
-                'venue' => $event['venue'],
+                'title' => $title,
+                'description' => $event['description'],
+                'venue_id' => $event['venue_id'] ?: null,
+                'event_date' => $event['event_date'] ?: null,
+                'event_time' => $event['event_time'] ?: null,
                 'status' => $event['status'],
-                'id' => $id,
+                'event_id' => $id,
             ]);
             header('Location: admin_events.php'); exit;
         } catch (Exception $e) {
@@ -41,4 +45,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+$venueStmt = $pdo->prepare(
+    'SELECT v.venue_id, v.name
+     FROM venues v
+     WHERE NOT EXISTS (
+         SELECT 1 FROM events e
+         WHERE e.venue_id = v.venue_id AND e.event_id <> :event_id
+     )
+     ORDER BY v.name'
+);
+$venueStmt->execute(['event_id' => $id]);
+$venues = $venueStmt->fetchAll();
 include __DIR__ . '/views/event_form.html';

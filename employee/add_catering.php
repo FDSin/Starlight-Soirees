@@ -5,15 +5,16 @@ require_once __DIR__ . '/../db.php';
 $pageTitle = 'Add Catering';
 $actionUrl = 'add_catering.php';
 $error = '';
-$c = ['name' => '', 'details' => '', 'price' => ''];
+$c = ['item_name' => '', 'description' => '', 'price' => '', 'quantity' => 1, 'event_id' => ''];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = trim($_POST['name'] ?? '');
-    $c['name'] = $name; $c['details'] = trim($_POST['details'] ?? ''); $c['price'] = trim($_POST['price'] ?? '');
-    if ($name === '') { $error = 'Name is required.'; }
+    $itemName = trim($_POST['item_name'] ?? '');
+    $c['item_name'] = $itemName; $c['description'] = trim($_POST['description'] ?? ''); $c['price'] = trim($_POST['price'] ?? ''); $c['quantity'] = (int)($_POST['quantity'] ?? 1); $c['event_id'] = (int)($_POST['event_id'] ?? 0);
+    if ($itemName === '') { $error = 'Name is required.'; }
     else {
-        $stmt = $pdo->prepare('INSERT INTO catering (name, details, price) VALUES (:name, :details, :price)');
-        $stmt->execute(['name'=>$name, 'details'=>$c['details'], 'price'=>$c['price']]);
+        $stmt = $pdo->prepare('INSERT INTO food_catering (event_id, item_name, description, price, quantity) VALUES (:event_id, :item_name, :description, :price, :quantity)');
+        $stmt->execute(['event_id'=>$c['event_id'] ?: null, 'item_name'=>$itemName, 'description'=>$c['description'], 'price'=>$c['price'], 'quantity'=>$c['quantity']]);
         header('Location: admin_food.php'); exit;
     }
 }
+$events = $pdo->query('SELECT event_id, title FROM events ORDER BY event_date DESC')->fetchAll();
 include __DIR__ . '/views/catering_form.html';

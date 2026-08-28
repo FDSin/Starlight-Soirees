@@ -12,8 +12,10 @@
             <?php if (!empty($error)): ?><div class="error"><?= htmlspecialchars($error) ?></div><?php endif; ?>
             <div class="form-card">
                 <form method="POST" action="<?= htmlspecialchars($actionUrl) ?>">
-                    <div class="form-row"><label for="name">Menu / Package Name</label><input id="name" name="name" type="text" value="<?= htmlspecialchars($c['name'] ?? '') ?>" required></div>
-                    <div class="form-row"><label for="details">Details</label><textarea id="details" name="details"><?= htmlspecialchars($c['details'] ?? '') ?></textarea></div>
+                    <div class="form-row"><label for="event_id">Event</label><select id="event_id" name="event_id"><option value="">Select event</option><?php foreach ($events ?? [] as $eventOption): ?><option value="<?= (int)$eventOption['event_id'] ?>" <?= (int)($c['event_id'] ?? 0) === (int)$eventOption['event_id'] ? 'selected' : '' ?>><?= htmlspecialchars($eventOption['title']) ?></option><?php endforeach; ?></select></div>
+                    <div class="form-row"><label for="item_name">Menu / Package Name</label><input id="item_name" name="item_name" type="text" value="<?= htmlspecialchars($c['item_name'] ?? '') ?>" required></div>
+                    <div class="form-row"><label for="description">Description</label><textarea id="description" name="description"><?= htmlspecialchars($c['description'] ?? '') ?></textarea></div>
+                    <div class="form-row"><label for="quantity">Quantity</label><input id="quantity" name="quantity" type="number" min="1" value="<?= htmlspecialchars($c['quantity'] ?? 1) ?>"></div>
                     <div class="form-row"><label for="price">Price</label><input id="price" name="price" type="text" value="<?= htmlspecialchars($c['price'] ?? '') ?>"></div>
                     <div class="form-actions"><button type="submit" class="btn-primary">Save</button><a href="admin_food.php">Cancel</a></div>
                 </form>
@@ -22,4 +24,3 @@
     </div>
 </body>
 </html>
-

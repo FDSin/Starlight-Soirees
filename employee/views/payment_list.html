@@ -9,10 +9,11 @@
     <div class="main-wrapper">
         <header class="top-header"><h2>Payment</h2></header>
         <main style="padding:20px;">
-            <a href="add_payment.php" class="btn-primary" style="margin-bottom:12px; display:inline-block;">+ Add Payment</a>
+            <a href="add_payment.php" class="btn-primary">+ Add Payment</a>
+            <form method="GET" class="filter-form"><input type="search" name="search" placeholder="Search event ID or status" value="<?= htmlspecialchars($search ?? '') ?>"><select name="status"><option value="">All statuses</option><option value="pending" <?= ($status ?? '') === 'pending' ? 'selected' : '' ?>>Pending</option><option value="completed" <?= ($status ?? '') === 'completed' ? 'selected' : '' ?>>Completed</option><option value="failed" <?= ($status ?? '') === 'failed' ? 'selected' : '' ?>>Failed</option></select><button type="submit" class="btn-primary">Search / Filter</button></form>
             <?php if (!empty($error)): ?><div class="error"><?= htmlspecialchars($error) ?></div><?php endif; ?>
             <?php if (empty($payments)): ?>
-                <div class="form-card">No payments found. Ensure your <code>payments</code> table exists and has id, event_id, amount, date, status.</div>
+                <div class="form-card">No payments found.</div>
             <?php else: ?>
                 <table class="table">
                     <thead><tr><th>Event ID</th><th>Amount</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
@@ -21,14 +22,14 @@
                             <tr>
                                 <td><?= htmlspecialchars($p['event_id']) ?></td>
                                 <td><?= htmlspecialchars($p['amount']) ?></td>
-                                <td><?= htmlspecialchars($p['date']) ?></td>
-                                <td><?= htmlspecialchars($p['status']) ?></td>
+                                <td><?= htmlspecialchars($p['payment_date']) ?></td>
+                                <td><?= htmlspecialchars(ucfirst((string)($p['status'] ?: 'pending'))) ?></td>
                                 <td>
-                                    <a href="view_payment.php?id=<?= (int)$p['id'] ?>">View</a> |
-                                    <a href="edit_payment.php?id=<?= (int)$p['id'] ?>">Edit</a> |
+                                    <a href="view_payment.php?id=<?= (int)$p['payment_id'] ?>">View</a> |
+                                    <a href="edit_payment.php?id=<?= (int)$p['payment_id'] ?>">Edit</a> |
                                     <form method="POST" action="admin_payment.php" style="display:inline;">
                                         <input type="hidden" name="action" value="delete">
-                                        <input type="hidden" name="id" value="<?= (int)$p['id'] ?>">
+                                        <input type="hidden" name="payment_id" value="<?= (int)$p['payment_id'] ?>">
                                         <button type="submit" class="btn-danger" onclick="return confirm('Delete this payment?')">Delete</button>
                                     </form>
                                 </td>
@@ -41,4 +42,3 @@
     </div>
 </body>
 </html>
-

@@ -22,10 +22,10 @@
                     <tbody>
                         <?php foreach ($reportData as $r): ?>
                             <tr>
-                                <td><?= htmlspecialchars($r['name']) ?></td>
-                                <td><?= htmlspecialchars($r['date']) ?></td>
-                                <td><?= htmlspecialchars($r['venue']) ?></td>
-                                <td><?= htmlspecialchars($r['status']) ?></td>
+                                <td><?= htmlspecialchars($r['title']) ?></td>
+                                <td><?= htmlspecialchars($r['event_date']) ?></td>
+                                <td><?= htmlspecialchars($r['venue_name'] ?? '') ?></td>
+                                <td><?= htmlspecialchars(ucfirst((string)($r['status'] ?: 'planned'))) ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -37,4 +37,3 @@
     </div>
 </body>
 </html>
-
