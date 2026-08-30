@@ -2,19 +2,29 @@
 session_start();
 require_once __DIR__ . '/../check_auth.php';
 require_once __DIR__ . '/../db.php';
-$pageTitle = 'Add Catering';
+
+$pageTitle = 'Add Menu Package';
 $actionUrl = 'add_catering.php';
 $error = '';
-$c = ['item_name' => '', 'description' => '', 'price' => '', 'quantity' => 1, 'event_id' => ''];
+$menu = ['package_name' => '', 'description' => '', 'price_per_person' => ''];
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $itemName = trim($_POST['item_name'] ?? '');
-    $c['item_name'] = $itemName; $c['description'] = trim($_POST['description'] ?? ''); $c['price'] = trim($_POST['price'] ?? ''); $c['quantity'] = (int)($_POST['quantity'] ?? 1); $c['event_id'] = (int)($_POST['event_id'] ?? 0);
-    if ($itemName === '') { $error = 'Name is required.'; }
+    $menu = [
+        'package_name' => trim($_POST['package_name'] ?? ''),
+        'description' => trim($_POST['description'] ?? ''),
+        'price_per_person' => trim($_POST['price_per_person'] ?? ''),
+    ];
+    if ($menu['package_name'] === '') $error = 'Package name is required.';
+    elseif (!is_numeric($menu['price_per_person']) || (float)$menu['price_per_person'] < 0) $error = 'Price per person must be a valid positive amount.';
     else {
-        $stmt = $pdo->prepare('INSERT INTO food_catering (event_id, item_name, description, price, quantity) VALUES (:event_id, :item_name, :description, :price, :quantity)');
-        $stmt->execute(['event_id'=>$c['event_id'] ?: null, 'item_name'=>$itemName, 'description'=>$c['description'], 'price'=>$c['price'], 'quantity'=>$c['quantity']]);
-        header('Location: admin_food.php'); exit;
+        $stmt = $pdo->prepare(
+            'INSERT INTO menus (package_name, price_per_person, description)
+             VALUES (:package_name, :price_per_person, :description)'
+        );
+        $stmt->execute($menu);
+        header('Location: admin_food.php');
+        exit;
     }
 }
-$events = $pdo->query('SELECT event_id, title FROM events ORDER BY event_date DESC')->fetchAll();
+
 include __DIR__ . '/views/catering_form.html';

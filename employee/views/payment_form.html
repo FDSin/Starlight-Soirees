@@ -1,33 +1,21 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title><?= htmlspecialchars($pageTitle ?? 'Payment') ?> - Starlight Soirées</title>
-    <link rel="stylesheet" href="../css/dashboard_style.css">
-</head>
-<body>
-    <?php require_once __DIR__ . '/../../sidebar.php'; ?>
-    <div class="main-wrapper">
-        <header class="top-header"><h2><?= htmlspecialchars($pageTitle ?? 'Payment') ?></h2></header>
-        <main style="padding:20px;">
-            <?php if (!empty($error)): ?><div class="error"><?= htmlspecialchars($error) ?></div><?php endif; ?>
-            <div class="form-card">
-                <form method="POST" action="<?= htmlspecialchars($actionUrl) ?>">
-                    <div class="form-row"><label for="event_id">Event</label><select id="event_id" name="event_id" required><option value="">Select event</option><?php foreach ($events ?? [] as $eventOption): ?><option value="<?= (int)$eventOption['event_id'] ?>" <?= (int)($p['event_id'] ?? 0) === (int)$eventOption['event_id'] ? 'selected' : '' ?>>#<?= (int)$eventOption['event_id'] ?> - <?= htmlspecialchars($eventOption['title']) ?></option><?php endforeach; ?></select></div>
-                    <div class="form-row"><label for="amount">Amount</label><input id="amount" name="amount" type="text" value="<?= htmlspecialchars($p['amount'] ?? '') ?>"></div>
-                    <div class="form-row"><label for="date">Date</label><input id="date" name="date" type="date" value="<?= htmlspecialchars($p['date'] ?? '') ?>"></div>
-                    <div class="form-row"><label for="payment_method">Payment Method</label><input id="payment_method" name="payment_method" type="text" value="<?= htmlspecialchars($p['payment_method'] ?? '') ?>"></div>
-                    <div class="form-row"><label for="status">Status</label>
-                        <select id="status" name="status">
-                            <?php $currentStatus = $p['status'] ?? 'pending'; ?>
-                            <option value="pending" <?= $currentStatus === 'pending' ? 'selected' : '' ?>>Pending</option>
-                            <option value="completed" <?= $currentStatus === 'completed' ? 'selected' : '' ?>>Completed</option>
-                            <option value="failed" <?= $currentStatus === 'failed' ? 'selected' : '' ?>>Failed</option>
-                        </select>
-                    </div>
-                    <div class="form-actions"><button type="submit" class="btn-primary">Save</button><a href="admin_payment.php">Cancel</a></div>
-                </form>
-            </div>
-        </main>
-    </div>
-</body>
-</html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title><?= htmlspecialchars($pageTitle) ?> - Starlight Soirées</title><link rel="stylesheet" href="../css/dashboard_style.css"></head>
+<body><?php require_once __DIR__ . '/../../sidebar.php'; ?><div class="main-wrapper"><header class="top-header"><h2><?= htmlspecialchars($pageTitle) ?></h2></header><main class="page-content">
+<?php if ($error): ?><div class="error" role="alert"><?= htmlspecialchars($error) ?></div><?php endif; ?>
+<div class="form-card"><form method="POST" action="<?= htmlspecialchars($actionUrl) ?>" enctype="multipart/form-data">
+    <div class="form-row"><label for="event_id">Event *</label><select id="event_id" name="event_id" required><option value="" data-total="">Select event</option><?php foreach ($events as $eventOption): ?><option value="<?= (int)$eventOption['event_id'] ?>" data-total="<?= htmlspecialchars($eventOption['calculated_total']) ?>" <?= (int)$p['event_id'] === (int)$eventOption['event_id'] ? 'selected' : '' ?>>#<?= (int)$eventOption['event_id'] ?> - <?= htmlspecialchars($eventOption['title']) ?></option><?php endforeach; ?></select><small>Only events with both a venue and menu can be paid.</small></div>
+    <div class="form-row"><label for="total_amount">Calculated Total ($)</label><input id="total_amount" name="total_amount" type="text" value="<?= $p['total_amount'] === '' || $p['total_amount'] === null ? '' : number_format((float)$p['total_amount'], 2, '.', '') ?>" readonly></div>
+    <div class="form-row"><label for="payment_method">Payment Method *</label><select id="payment_method" name="payment_method" required><option value="">Select method</option><?php foreach (['Bank Transfer', 'Credit Card'] as $method): ?><option value="<?= $method ?>" <?= $p['payment_method'] === $method ? 'selected' : '' ?>><?= $method ?></option><?php endforeach; ?></select></div>
+    <div class="form-row"><label for="payment_status">Payment Status</label><select id="payment_status" name="payment_status"><?php foreach (['Unpaid', 'Pending Approval', 'Paid'] as $statusOption): ?><option value="<?= $statusOption ?>" <?= $p['payment_status'] === $statusOption ? 'selected' : '' ?>><?= $statusOption ?></option><?php endforeach; ?></select></div>
+    <div class="form-row"><label for="payment_date">Payment Date</label><input id="payment_date" name="payment_date" type="datetime-local" value="<?= htmlspecialchars($p['payment_date']) ?>"></div>
+    <div class="form-row"><label for="receipt_file">Receipt (JPG, PNG, or PDF; max 5 MB)</label><input id="receipt_file" name="receipt_file" type="file" accept=".jpg,.jpeg,.png,.pdf"><?php if (!empty($p['receipt_file'])): ?><small><a href="../<?= htmlspecialchars($p['receipt_file']) ?>" target="_blank" rel="noopener">View current receipt</a></small><?php endif; ?></div>
+    <div class="form-actions"><button type="submit" class="btn-primary">Save Payment</button><a href="admin_payment.php">Cancel</a></div>
+</form></div></main></div>
+<script>
+    
+const eventSelect = document.getElementById('event_id');
+const amountInput = document.getElementById('total_amount');
+function updateAmount() { const value = eventSelect.selectedOptions[0].dataset.total; amountInput.value = value === '' ? '' : Number(value).toFixed(2); }
+eventSelect.addEventListener('change', updateAmount);
+if (!amountInput.value) updateAmount();
+</script></body></html>

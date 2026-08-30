@@ -3,30 +3,27 @@ session_start();
 require_once __DIR__ . '/../check_auth.php';
 require_once __DIR__ . '/../db.php';
 
+$error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete') {
     $id = (int)($_POST['venue_id'] ?? 0);
     if ($id > 0) {
-        $stmt = $pdo->prepare('DELETE FROM venues WHERE venue_id = :venue_id');
-        $stmt->execute(['venue_id' => $id]);
-        header('Location: admin_venue.php'); exit;
+        try {
+            $stmt = $pdo->prepare('DELETE FROM venues WHERE venue_id = :venue_id');
+            $stmt->execute(['venue_id' => $id]);
+            header('Location: admin_venue.php');
+            exit;
+        } catch (Exception $e) {
+            $error = 'This venue is used by an event and cannot be deleted.';
+        }
     }
 }
 
-$venues = [];
-$error = '';
 $search = trim($_GET['search'] ?? '');
-try {
-    $res = $pdo->query("SHOW TABLES LIKE 'venues'");
-    if ($res && $res->rowCount() > 0) {
-        $stmt = $pdo->prepare('SELECT venue_id, name, address, capacity FROM venues WHERE name LIKE :venue_name_search OR address LIKE :venue_address_search ORDER BY name');
-        $stmt->execute([
-            'venue_name_search' => '%' . $search . '%',
-            'venue_address_search' => '%' . $search . '%',
-        ]);
-        $venues = $stmt->fetchAll();
-    }
-} catch (Exception $e) {
-    $error = $e->getMessage();
-}
+$stmt = $pdo->prepare(
+    'SELECT venue_id, venue_name, max_capacity, venue_price, location
+     FROM venues WHERE venue_name LIKE :name OR location LIKE :location ORDER BY venue_name'
+);
+$stmt->execute(['name' => '%' . $search . '%', 'location' => '%' . $search . '%']);
+$venues = $stmt->fetchAll();
 
 include __DIR__ . '/views/venue_list.html';

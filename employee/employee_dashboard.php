@@ -11,11 +11,11 @@ $pendingTasks = 0;
 try {
     $stmt = $pdo->query("SHOW TABLES LIKE 'events'");
     if ($stmt && $stmt->rowCount() > 0) {
-        $eventStmt = $pdo->query("SELECT COUNT(*) AS total FROM events WHERE status IN ('planned', 'confirmed')");
+        $eventStmt = $pdo->query("SELECT COUNT(*) AS total FROM events WHERE event_status IN ('Pending', 'Confirmed')");
         $eventRow = $eventStmt->fetch();
         $activeEvents = (int)($eventRow['total'] ?? 0);
 
-        $pendingStmt = $pdo->query("SELECT COUNT(*) AS total FROM events WHERE status = 'planned'");
+        $pendingStmt = $pdo->query("SELECT COUNT(*) AS total FROM events WHERE event_status = 'Pending'");
         $pendingRow = $pendingStmt->fetch();
         $pendingTasks = (int)($pendingRow['total'] ?? 0);
     }

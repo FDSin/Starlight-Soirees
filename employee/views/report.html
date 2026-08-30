@@ -18,14 +18,17 @@
             <?php if (!empty($error)): ?><div class="error"><?= htmlspecialchars($error) ?></div><?php endif; ?>
             <?php if (!empty($reportData)): ?>
                 <table class="table">
-                    <thead><tr><th>Event</th><th>Date</th><th>Venue</th><th>Status</th></tr></thead>
+                    <thead><tr><th>Event</th><th>Date</th><th>Guests</th><th>Venue</th><th>Menu</th><th>Total</th><th>Status</th></tr></thead>
                     <tbody>
                         <?php foreach ($reportData as $r): ?>
                             <tr>
                                 <td><?= htmlspecialchars($r['title']) ?></td>
                                 <td><?= htmlspecialchars($r['event_date']) ?></td>
+                                <td><?= (int)$r['guest_count'] ?></td>
                                 <td><?= htmlspecialchars($r['venue_name'] ?? '') ?></td>
-                                <td><?= htmlspecialchars(ucfirst((string)($r['status'] ?: 'planned'))) ?></td>
+                                <td><?= htmlspecialchars($r['package_name'] ?? '') ?></td>
+                                <td>$<?= number_format((float)$r['estimated_total'], 2) ?></td>
+                                <td><?= htmlspecialchars($r['event_status']) ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>

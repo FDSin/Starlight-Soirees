@@ -1,23 +1,6 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>View Payment - Starlight Soirées</title>
-    <link rel="stylesheet" href="../css/dashboard_style.css">
-</head>
-<body>
-    <?php require_once __DIR__ . '/../../sidebar.php'; ?>
-    <div class="main-wrapper">
-        <header class="top-header"><h2>View Payment</h2></header>
-        <main style="padding:20px;">
-            <div class="form-card">
-                <div class="form-row"><strong>Event ID:</strong> <?= htmlspecialchars($p['event_id'] ?? '') ?></div>
-                <div class="form-row"><strong>Amount:</strong> <?= htmlspecialchars($p['amount'] ?? '') ?></div>
-                <div class="form-row"><strong>Date:</strong> <?= htmlspecialchars($p['date'] ?? '') ?></div>
-                <div class="form-row"><strong>Payment Method:</strong> <?= htmlspecialchars($p['payment_method'] ?? '') ?></div>
-                <div class="form-row"><strong>Status:</strong> <?= htmlspecialchars(ucfirst((string)($p['status'] ?: 'pending'))) ?></div>
-                <div class="form-actions"><a href="edit_payment.php?id=<?= (int)($p['payment_id'] ?? 0) ?>">Edit</a> <a href="admin_payment.php">Back</a></div>
-            </div>
-        </main>
-    </div>
-</body>
-</html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>View Payment - Starlight Soirées</title><link rel="stylesheet" href="../css/dashboard_style.css"></head>
+<body><?php require_once __DIR__ . '/../../sidebar.php'; ?><div class="main-wrapper"><header class="top-header"><h2>Payment Details</h2></header><main class="page-content"><div class="form-card">
+<div class="form-row"><strong>Event:</strong> #<?= (int)$p['event_id'] ?> - <?= htmlspecialchars($p['title']) ?></div><div class="form-row"><strong>Total Amount:</strong> $<?= number_format((float)$p['total_amount'], 2) ?></div><div class="form-row"><strong>Payment Method:</strong> <?= htmlspecialchars($p['payment_method']) ?></div><div class="form-row"><strong>Status:</strong> <?= htmlspecialchars($p['payment_status']) ?></div><div class="form-row"><strong>Payment Date:</strong> <?= htmlspecialchars($p['payment_date'] ?? '') ?></div><div class="form-row"><strong>Receipt:</strong> <?php if ($p['receipt_file']): ?><a href="../<?= htmlspecialchars($p['receipt_file']) ?>" target="_blank" rel="noopener">Open receipt</a><?php else: ?>No receipt uploaded<?php endif; ?></div>
+<div class="form-actions"><a href="edit_payment.php?id=<?= (int)$p['payment_id'] ?>">Edit</a><a href="admin_payment.php">Back</a></div>
+</div></main></div></body></html>

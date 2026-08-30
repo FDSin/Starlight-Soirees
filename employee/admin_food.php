@@ -3,30 +3,27 @@ session_start();
 require_once __DIR__ . '/../check_auth.php';
 require_once __DIR__ . '/../db.php';
 
+$error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete') {
-    $id = (int)($_POST['food_id'] ?? 0);
+    $id = (int)($_POST['menu_id'] ?? 0);
     if ($id > 0) {
-        $stmt = $pdo->prepare('DELETE FROM food_catering WHERE food_id = :food_id');
-        $stmt->execute(['food_id' => $id]);
-        header('Location: admin_food.php'); exit;
+        try {
+            $stmt = $pdo->prepare('DELETE FROM menus WHERE menu_id = :menu_id');
+            $stmt->execute(['menu_id' => $id]);
+            header('Location: admin_food.php');
+            exit;
+        } catch (Exception $e) {
+            $error = 'This menu package is used by an event and cannot be deleted.';
+        }
     }
 }
 
-$catering = [];
-$error = '';
 $search = trim($_GET['search'] ?? '');
-try {
-    $res = $pdo->query("SHOW TABLES LIKE 'food_catering'");
-    if ($res && $res->rowCount() > 0) {
-        $stmt = $pdo->prepare('SELECT food_id, item_name, description, price FROM food_catering WHERE item_name LIKE :food_name_search OR description LIKE :food_description_search ORDER BY item_name');
-        $stmt->execute([
-            'food_name_search' => '%' . $search . '%',
-            'food_description_search' => '%' . $search . '%',
-        ]);
-        $catering = $stmt->fetchAll();
-    }
-} catch (Exception $e) {
-    $error = $e->getMessage();
-}
+$stmt = $pdo->prepare(
+    'SELECT menu_id, package_name, price_per_person, description FROM menus
+     WHERE package_name LIKE :name OR description LIKE :description ORDER BY price_per_person'
+);
+$stmt->execute(['name' => '%' . $search . '%', 'description' => '%' . $search . '%']);
+$menus = $stmt->fetchAll();
 
 include __DIR__ . '/views/catering_list.html';

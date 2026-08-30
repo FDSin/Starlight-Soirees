@@ -1,43 +1,13 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Venue - Starlight Soirées</title>
-    <link rel="stylesheet" href="../css/dashboard_style.css">
-</head>
-<body>
-    <?php require_once __DIR__ . '/../../sidebar.php'; ?>
-    <div class="main-wrapper">
-        <header class="top-header"><h2>Venue</h2></header>
-        <main style="padding:20px;">
-            <a href="add_venue.php" class="btn-primary">+ Add Venue</a>
-            <form method="GET" class="filter-form"><input type="search" name="search" placeholder="Search venue" value="<?= htmlspecialchars($search ?? '') ?>"><button type="submit" class="btn-primary">Search</button></form>
-            <?php if (!empty($error)): ?><div class="error"><?= htmlspecialchars($error) ?></div><?php endif; ?>
-            <?php if (empty($venues)): ?>
-                <div class="form-card">No venues found.</div>
-            <?php else: ?>
-                <table class="table">
-                    <thead><tr><th>Name</th><th>Address</th><th>Capacity</th><th>Actions</th></tr></thead>
-                    <tbody>
-                        <?php foreach ($venues as $v): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($v['name']) ?></td>
-                                <td><?= htmlspecialchars($v['address']) ?></td>
-                                <td><?= htmlspecialchars($v['capacity']) ?></td>
-                                <td>
-                                    <a href="view_venue.php?id=<?= (int)$v['venue_id'] ?>">View</a> |
-                                    <a href="edit_venue.php?id=<?= (int)$v['venue_id'] ?>">Edit</a> |
-                                    <form method="POST" action="admin_venue.php" style="display:inline;">
-                                        <input type="hidden" name="action" value="delete">
-                                        <input type="hidden" name="venue_id" value="<?= (int)$v['venue_id'] ?>">
-                                        <button type="submit" class="btn-danger" onclick="return confirm('Delete this venue?')">Delete</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            <?php endif; ?>
-        </main>
-    </div>
-</body>
-</html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Venues - Starlight Soirées</title><link rel="stylesheet" href="../css/dashboard_style.css"></head>
+<body><?php require_once __DIR__ . '/../../sidebar.php'; ?><div class="main-wrapper"><header class="top-header"><h2>Venues</h2></header><main class="page-content">
+<a href="add_venue.php" class="btn-primary">+ Add Venue</a>
+<form method="GET" class="filter-form"><label for="venue-search">Search</label><input id="venue-search" type="search" name="search" placeholder="Name or location" value="<?= htmlspecialchars($search) ?>"><button type="submit" class="btn-primary">Search</button></form>
+<?php if ($error): ?><div class="error" role="alert"><?= htmlspecialchars($error) ?></div><?php endif; ?>
+<?php if (!$venues): ?><div class="form-card">No venues found. Add a venue to get started.</div><?php else: ?>
+<table class="table"><thead><tr><th>Name</th><th>Location</th><th>Capacity</th><th>Price</th><th>Actions</th></tr></thead><tbody>
+<?php foreach ($venues as $venue): ?><tr><td><?= htmlspecialchars($venue['venue_name']) ?></td><td><?= htmlspecialchars($venue['location']) ?></td><td><?= (int)$venue['max_capacity'] ?></td><td>$<?= number_format((float)$venue['venue_price'], 2) ?></td><td>
+<a href="view_venue.php?id=<?= (int)$venue['venue_id'] ?>">View</a> | <a href="edit_venue.php?id=<?= (int)$venue['venue_id'] ?>">Edit</a> |
+<form method="POST" action="admin_venue.php" style="display:inline;"><input type="hidden" name="action" value="delete"><input type="hidden" name="venue_id" value="<?= (int)$venue['venue_id'] ?>"><button type="submit" class="btn-danger" onclick="return confirm('Delete this venue?')">Delete</button></form>
+</td></tr><?php endforeach; ?></tbody></table><?php endif; ?>
+</main></div></body></html>

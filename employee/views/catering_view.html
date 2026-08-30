@@ -1,22 +1,6 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>View Catering - Starlight Soirées</title>
-    <link rel="stylesheet" href="../css/dashboard_style.css">
-</head>
-<body>
-    <?php require_once __DIR__ . '/../../sidebar.php'; ?>
-    <div class="main-wrapper">
-        <header class="top-header"><h2>View Catering</h2></header>
-        <main style="padding:20px;">
-            <div class="form-card">
-                <div class="form-row"><strong>Item:</strong> <?= htmlspecialchars($c['item_name'] ?? '') ?></div>
-                <div class="form-row"><strong>Description:</strong> <?= nl2br(htmlspecialchars($c['description'] ?? '')) ?></div>
-                <div class="form-row"><strong>Price:</strong> <?= htmlspecialchars($c['price'] ?? '') ?></div>
-                <div class="form-row"><strong>Quantity:</strong> <?= htmlspecialchars($c['quantity'] ?? '') ?></div>
-                <div class="form-actions"><a href="edit_catering.php?id=<?= (int)($c['food_id'] ?? 0) ?>">Edit</a> <a href="admin_food.php">Back</a></div>
-            </div>
-        </main>
-    </div>
-</body>
-</html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>View Menu Package - Starlight Soirées</title><link rel="stylesheet" href="../css/dashboard_style.css"></head>
+<body><?php require_once __DIR__ . '/../../sidebar.php'; ?><div class="main-wrapper"><header class="top-header"><h2>Menu Package Details</h2></header><main class="page-content"><div class="form-card">
+<div class="form-row"><strong>Package:</strong> <?= htmlspecialchars($menu['package_name']) ?></div><div class="form-row"><strong>Price Per Guest:</strong> $<?= number_format((float)$menu['price_per_person'], 2) ?></div><div class="form-row"><strong>Description:</strong> <?= nl2br(htmlspecialchars($menu['description'])) ?></div>
+<div class="form-actions"><a href="edit_catering.php?id=<?= (int)$menu['menu_id'] ?>">Edit</a><a href="admin_food.php">Back</a></div>
+</div></main></div></body></html>

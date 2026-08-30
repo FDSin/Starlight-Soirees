@@ -2,6 +2,7 @@
 session_start();
 require_once __DIR__ . '/../check_auth.php';
 require_once __DIR__ . '/../db.php';
+require_once __DIR__ . '/event_functions.php';
 
 $id = (int)($_GET['id'] ?? 0);
 if ($id <= 0) { header('Location: admin_events.php'); exit; }
@@ -10,50 +11,69 @@ $pageTitle = 'Edit Event';
 $actionUrl = 'edit_event.php?id=' . $id;
 $error = '';
 
-$stmt = $pdo->prepare('SELECT event_id, title, description, venue_id, event_date, event_time, status FROM events WHERE event_id = :event_id LIMIT 1');
+$stmt = $pdo->prepare(
+    'SELECT event_id, title, description, venue_id, menu_id, event_date, event_time, guest_count, event_status
+     FROM events WHERE event_id = :event_id'
+);
 $stmt->execute(['event_id' => $id]);
 $event = $stmt->fetch();
 if (!$event) { header('Location: admin_events.php'); exit; }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $title = trim($_POST['title'] ?? '');
-    $event['title'] = $title;
-    $event['description'] = trim($_POST['description'] ?? '');
-    $event['venue_id'] = (int)($_POST['venue_id'] ?? 0);
-    $event['event_date'] = $_POST['event_date'] ?? '';
-    $event['event_time'] = $_POST['event_time'] ?? '';
-    $event['status'] = $_POST['status'] ?? 'planned';
+    $event = [
+        'event_id' => $id,
+        'title' => trim($_POST['title'] ?? ''),
+        'description' => trim($_POST['description'] ?? ''),
+        'venue_id' => (int)($_POST['venue_id'] ?? 0),
+        'menu_id' => (int)($_POST['menu_id'] ?? 0),
+        'event_date' => $_POST['event_date'] ?? '',
+        'event_time' => $_POST['event_time'] ?? '',
+        'guest_count' => (int)($_POST['guest_count'] ?? 0),
+        'event_status' => $_POST['event_status'] ?? 'Pending',
+    ];
 
-    if ($title === '') {
-        $error = 'Event name is required.';
-    } else {
+    $error = validateEvent($pdo, $event, $id);
+    if ($error === '' && (!$event['venue_id'] || !$event['menu_id'])) {
+        $paymentStmt = $pdo->prepare('SELECT COUNT(*) FROM payments WHERE event_id = :event_id');
+        $paymentStmt->execute(['event_id' => $id]);
+        if ((int)$paymentStmt->fetchColumn() > 0) {
+            $error = 'This event has a payment, so its venue and menu cannot be removed.';
+        }
+    }
+    if ($error === '') {
         try {
-            $stmt = $pdo->prepare('UPDATE events SET title = :title, description = :description, venue_id = :venue_id, event_date = :event_date, event_time = :event_time, status = :status WHERE event_id = :event_id');
+            $stmt = $pdo->prepare(
+                'UPDATE events SET venue_id = :venue_id, menu_id = :menu_id, title = :title,
+                 description = :description, event_date = :event_date, event_time = :event_time,
+                 guest_count = :guest_count, event_status = :event_status WHERE event_id = :event_id'
+            );
             $stmt->execute([
-                'title' => $title,
-                'description' => $event['description'],
                 'venue_id' => $event['venue_id'] ?: null,
-                'event_date' => $event['event_date'] ?: null,
+                'menu_id' => $event['menu_id'] ?: null,
+                'title' => $event['title'],
+                'description' => $event['description'],
+                'event_date' => $event['event_date'],
                 'event_time' => $event['event_time'] ?: null,
-                'status' => $event['status'],
+                'guest_count' => $event['guest_count'],
+                'event_status' => $event['event_status'],
                 'event_id' => $id,
             ]);
-            header('Location: admin_events.php'); exit;
+            $stmt = $pdo->prepare(
+                'UPDATE payments p
+                 JOIN events e ON e.event_id = p.event_id
+                 JOIN venues v ON v.venue_id = e.venue_id
+                 JOIN menus m ON m.menu_id = e.menu_id
+                 SET p.total_amount = v.venue_price + (m.price_per_person * e.guest_count)
+                 WHERE p.event_id = :event_id'
+            );
+            $stmt->execute(['event_id' => $id]);
+            header('Location: admin_events.php');
+            exit;
         } catch (Exception $e) {
-            $error = $e->getMessage();
+            $error = 'Event could not be updated. Please check the entered information.';
         }
     }
 }
 
-$venueStmt = $pdo->prepare(
-    'SELECT v.venue_id, v.name
-     FROM venues v
-     WHERE NOT EXISTS (
-         SELECT 1 FROM events e
-         WHERE e.venue_id = v.venue_id AND e.event_id <> :event_id
-     )
-     ORDER BY v.name'
-);
-$venueStmt->execute(['event_id' => $id]);
-$venues = $venueStmt->fetchAll();
+[$venues, $menus] = getEventOptions($pdo, $id);
 include __DIR__ . '/views/event_form.html';

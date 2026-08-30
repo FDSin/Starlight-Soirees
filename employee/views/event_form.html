@@ -1,61 +1,74 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title><?= htmlspecialchars($pageTitle ?? 'Event') ?> - Starlight Soirées</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><?= htmlspecialchars($pageTitle) ?> - Starlight Soirées</title>
     <link rel="stylesheet" href="../css/dashboard_style.css">
 </head>
 <body>
     <?php require_once __DIR__ . '/../../sidebar.php'; ?>
     <div class="main-wrapper">
-        <header class="top-header">
-            <h2><?= htmlspecialchars($pageTitle ?? 'Event') ?></h2>
-        </header>
-        <main style="padding:20px;">
-            <?php if (!empty($error)): ?><div class="error"><?= htmlspecialchars($error) ?></div><?php endif; ?>
+        <header class="top-header"><h2><?= htmlspecialchars($pageTitle) ?></h2></header>
+        <main class="page-content">
+            <?php if ($error): ?><div class="error" role="alert"><?= htmlspecialchars($error) ?></div><?php endif; ?>
             <div class="form-card">
                 <form method="POST" action="<?= htmlspecialchars($actionUrl) ?>">
-                    <div class="form-row">
-                        <label for="title">Event Name</label>
-                        <input id="title" name="title" type="text" value="<?= htmlspecialchars($event['title'] ?? '') ?>" required>
-                    </div>
-                    <div class="form-row">
-                        <label for="description">Description</label>
-                        <textarea id="description" name="description"><?= htmlspecialchars($event['description'] ?? '') ?></textarea>
-                    </div>
+                    <div class="form-row"><label for="title">Event Name *</label><input id="title" name="title" type="text" value="<?= htmlspecialchars($event['title']) ?>" required></div>
+                    <div class="form-row"><label for="description">Description</label><textarea id="description" name="description"><?= htmlspecialchars($event['description']) ?></textarea></div>
                     <div class="form-row">
                         <label for="venue_id">Venue</label>
                         <select id="venue_id" name="venue_id">
-                            <option value="">Select venue</option>
-                            <?php foreach ($venues ?? [] as $venueOption): ?>
-                                <option value="<?= (int)$venueOption['venue_id'] ?>" <?= (int)($event['venue_id'] ?? 0) === (int)$venueOption['venue_id'] ? 'selected' : '' ?>><?= htmlspecialchars($venueOption['name']) ?></option>
+                            <option value="" data-price="0">Choose later</option>
+                            <?php foreach ($venues as $venueOption): ?>
+                                <option value="<?= (int)$venueOption['venue_id'] ?>" data-price="<?= htmlspecialchars($venueOption['venue_price']) ?>" <?= (int)$event['venue_id'] === (int)$venueOption['venue_id'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($venueOption['venue_name']) ?> (capacity <?= (int)$venueOption['max_capacity'] ?>, $<?= number_format((float)$venueOption['venue_price'], 2) ?>)
+                                </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="form-row">
-                        <label for="event_date">Date</label>
-                        <input id="event_date" name="event_date" type="date" value="<?= htmlspecialchars($event['event_date'] ?? '') ?>">
-                    </div>
-                    <div class="form-row">
-                        <label for="event_time">Time</label>
-                        <input id="event_time" name="event_time" type="time" value="<?= htmlspecialchars($event['event_time'] ?? '') ?>">
-                    </div>
-                    <div class="form-row">
-                        <label for="status">Status</label>
-                        <select id="status" name="status">
-                            <?php $selectedStatus = $event['status'] ?? 'planned'; ?>
-                            <option value="planned" <?= $selectedStatus === 'planned' ? 'selected' : '' ?>>Planned</option>
-                            <option value="confirmed" <?= $selectedStatus === 'confirmed' ? 'selected' : '' ?>>Confirmed</option>
-                            <option value="completed" <?= $selectedStatus === 'completed' ? 'selected' : '' ?>>Completed</option>
-                            <option value="cancelled" <?= $selectedStatus === 'cancelled' ? 'selected' : '' ?>>Cancelled</option>
+                        <label for="menu_id">Menu Package</label>
+                        <select id="menu_id" name="menu_id">
+                            <option value="" data-price="0">Choose later</option>
+                            <?php foreach ($menus as $menuOption): ?>
+                                <option value="<?= (int)$menuOption['menu_id'] ?>" data-price="<?= htmlspecialchars($menuOption['price_per_person']) ?>" <?= (int)$event['menu_id'] === (int)$menuOption['menu_id'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($menuOption['package_name']) ?> ($<?= number_format((float)$menuOption['price_per_person'], 2) ?> per guest)
+                                </option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
-                    <div class="form-actions">
-                        <button type="submit" class="btn-primary">Save</button>
-                        <a href="admin_events.php">Cancel</a>
+                    <div class="form-row"><label for="event_date">Date *</label><input id="event_date" name="event_date" type="date" value="<?= htmlspecialchars($event['event_date']) ?>" required></div>
+                    <div class="form-row"><label for="event_time">Time</label><input id="event_time" name="event_time" type="time" value="<?= htmlspecialchars($event['event_time']) ?>"></div>
+                    <div class="form-row"><label for="guest_count">Guest Count *</label><input id="guest_count" name="guest_count" type="number" min="1" value="<?= (int)$event['guest_count'] ?>" required></div>
+                    <div class="form-row">
+                        <label for="event_status">Status</label>
+                        <select id="event_status" name="event_status">
+                            <?php foreach (['Pending', 'Confirmed', 'Completed', 'Cancelled'] as $statusOption): ?>
+                                <option value="<?= $statusOption ?>" <?= $event['event_status'] === $statusOption ? 'selected' : '' ?>><?= $statusOption ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
+                    <div class="form-row"><strong>Estimated Total:</strong> <span id="estimated_total">$0.00</span></div>
+                    <div class="form-actions"><button type="submit" class="btn-primary">Save Event</button><a href="admin_events.php">Cancel</a></div>
                 </form>
             </div>
         </main>
     </div>
+    <script>
+        const venue = document.getElementById('venue_id');
+        const menu = document.getElementById('menu_id');
+        const guests = document.getElementById('guest_count');
+        const total = document.getElementById('estimated_total');
+        function updateTotal() {
+            const venuePrice = Number(venue.selectedOptions[0].dataset.price || 0);
+            const menuPrice = Number(menu.selectedOptions[0].dataset.price || 0);
+            total.textContent = '$' + (venuePrice + menuPrice * Number(guests.value || 0)).toFixed(2);
+        }
+        venue.addEventListener('change', updateTotal);
+        menu.addEventListener('change', updateTotal);
+        guests.addEventListener('input', updateTotal);
+        updateTotal();
+    </script>
 </body>
 </html>

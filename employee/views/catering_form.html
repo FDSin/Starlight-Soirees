@@ -1,26 +1,10 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title><?= htmlspecialchars($pageTitle ?? 'Catering') ?> - Starlight Soirées</title>
-    <link rel="stylesheet" href="../css/dashboard_style.css">
-</head>
-<body>
-    <?php require_once __DIR__ . '/../../sidebar.php'; ?>
-    <div class="main-wrapper">
-        <header class="top-header"><h2><?= htmlspecialchars($pageTitle ?? 'Catering') ?></h2></header>
-        <main style="padding:20px;">
-            <?php if (!empty($error)): ?><div class="error"><?= htmlspecialchars($error) ?></div><?php endif; ?>
-            <div class="form-card">
-                <form method="POST" action="<?= htmlspecialchars($actionUrl) ?>">
-                    <div class="form-row"><label for="event_id">Event</label><select id="event_id" name="event_id"><option value="">Select event</option><?php foreach ($events ?? [] as $eventOption): ?><option value="<?= (int)$eventOption['event_id'] ?>" <?= (int)($c['event_id'] ?? 0) === (int)$eventOption['event_id'] ? 'selected' : '' ?>><?= htmlspecialchars($eventOption['title']) ?></option><?php endforeach; ?></select></div>
-                    <div class="form-row"><label for="item_name">Menu / Package Name</label><input id="item_name" name="item_name" type="text" value="<?= htmlspecialchars($c['item_name'] ?? '') ?>" required></div>
-                    <div class="form-row"><label for="description">Description</label><textarea id="description" name="description"><?= htmlspecialchars($c['description'] ?? '') ?></textarea></div>
-                    <div class="form-row"><label for="quantity">Quantity</label><input id="quantity" name="quantity" type="number" min="1" value="<?= htmlspecialchars($c['quantity'] ?? 1) ?>"></div>
-                    <div class="form-row"><label for="price">Price</label><input id="price" name="price" type="text" value="<?= htmlspecialchars($c['price'] ?? '') ?>"></div>
-                    <div class="form-actions"><button type="submit" class="btn-primary">Save</button><a href="admin_food.php">Cancel</a></div>
-                </form>
-            </div>
-        </main>
-    </div>
-</body>
-</html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title><?= htmlspecialchars($pageTitle) ?> - Starlight Soirées</title><link rel="stylesheet" href="../css/dashboard_style.css"></head>
+<body><?php require_once __DIR__ . '/../../sidebar.php'; ?><div class="main-wrapper"><header class="top-header"><h2><?= htmlspecialchars($pageTitle) ?></h2></header><main class="page-content">
+<?php if ($error): ?><div class="error" role="alert"><?= htmlspecialchars($error) ?></div><?php endif; ?>
+<div class="form-card"><form method="POST" action="<?= htmlspecialchars($actionUrl) ?>">
+<div class="form-row"><label for="package_name">Package Name *</label><input id="package_name" name="package_name" type="text" value="<?= htmlspecialchars($menu['package_name']) ?>" required></div>
+<div class="form-row"><label for="price_per_person">Price Per Guest ($) *</label><input id="price_per_person" name="price_per_person" type="number" min="0" step="0.01" value="<?= htmlspecialchars($menu['price_per_person']) ?>" required></div>
+<div class="form-row"><label for="description">Description</label><textarea id="description" name="description"><?= htmlspecialchars($menu['description']) ?></textarea></div>
+<div class="form-actions"><button type="submit" class="btn-primary">Save Package</button><a href="admin_food.php">Cancel</a></div>
+</form></div></main></div></body></html>
