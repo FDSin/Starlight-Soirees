@@ -6,19 +6,43 @@
 </head>
 <body>
     <?php require_once __DIR__ . '/../../sidebar.php'; ?>
+
     <div class="main-wrapper">
-        <header class="top-header"><h2>Reports</h2></header>
+        <header class="top-header">
+            <h2>Reports</h2>
+        </header>
+
         <main style="padding:20px;">
             <form method="GET" style="margin-bottom:12px;">
-                <label>From: <input type="date" name="from" value="<?= htmlspecialchars($from ?? '') ?>"></label>
-                <label>To: <input type="date" name="to" value="<?= htmlspecialchars($to ?? '') ?>"></label>
+                <label>
+                    From:
+                    <input type="date" name="from" value="<?= htmlspecialchars($from ?? '') ?>">
+                </label>
+                <label>
+                    To:
+                    <input type="date" name="to" value="<?= htmlspecialchars($to ?? '') ?>">
+                </label>
                 <button type="submit">Generate Report</button>
                 <button type="button" onclick="window.print()">Print Report</button>
             </form>
-            <?php if (!empty($error)): ?><div class="error"><?= htmlspecialchars($error) ?></div><?php endif; ?>
+
+            <?php if (!empty($error)): ?>
+                <div class="error"><?= htmlspecialchars($error) ?></div>
+            <?php endif; ?>
+
             <?php if (!empty($reportData)): ?>
                 <table class="table">
-                    <thead><tr><th>Event</th><th>Date</th><th>Guests</th><th>Venue</th><th>Menu</th><th>Total</th><th>Status</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>Event</th>
+                            <th>Date</th>
+                            <th>Guests</th>
+                            <th>Venue</th>
+                            <th>Menu</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
                     <tbody>
                         <?php foreach ($reportData as $r): ?>
                             <tr>

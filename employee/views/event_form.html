@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,14 +8,29 @@
 </head>
 <body>
     <?php require_once __DIR__ . '/../../sidebar.php'; ?>
+
     <div class="main-wrapper">
-        <header class="top-header"><h2><?= htmlspecialchars($pageTitle) ?></h2></header>
+        <header class="top-header">
+            <h2><?= htmlspecialchars($pageTitle) ?></h2>
+        </header>
+
         <main class="page-content">
-            <?php if ($error): ?><div class="error" role="alert"><?= htmlspecialchars($error) ?></div><?php endif; ?>
+            <?php if ($error): ?>
+                <div class="error" role="alert"><?= htmlspecialchars($error) ?></div>
+            <?php endif; ?>
+
             <div class="form-card">
                 <form method="POST" action="<?= htmlspecialchars($actionUrl) ?>">
-                    <div class="form-row"><label for="title">Event Name *</label><input id="title" name="title" type="text" value="<?= htmlspecialchars($event['title']) ?>" required></div>
-                    <div class="form-row"><label for="description">Description</label><textarea id="description" name="description"><?= htmlspecialchars($event['description']) ?></textarea></div>
+                    <div class="form-row">
+                        <label for="title">Event Name *</label>
+                        <input id="title" name="title" type="text" value="<?= htmlspecialchars($event['title']) ?>" required>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description"><?= htmlspecialchars($event['description']) ?></textarea>
+                    </div>
+
                     <div class="form-row">
                         <label for="venue_id">Venue</label>
                         <select id="venue_id" name="venue_id">
@@ -27,6 +42,7 @@
                             <?php endforeach; ?>
                         </select>
                     </div>
+
                     <div class="form-row">
                         <label for="menu_id">Menu Package</label>
                         <select id="menu_id" name="menu_id">
@@ -38,19 +54,42 @@
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div class="form-row"><label for="event_date">Date *</label><input id="event_date" name="event_date" type="date" value="<?= htmlspecialchars($event['event_date']) ?>" required></div>
-                    <div class="form-row"><label for="event_time">Time</label><input id="event_time" name="event_time" type="time" value="<?= htmlspecialchars($event['event_time']) ?>"></div>
-                    <div class="form-row"><label for="guest_count">Guest Count *</label><input id="guest_count" name="guest_count" type="number" min="1" value="<?= (int)$event['guest_count'] ?>" required></div>
+
+                    <div class="form-row">
+                        <label for="event_date">Date *</label>
+                        <input id="event_date" name="event_date" type="date" value="<?= htmlspecialchars($event['event_date']) ?>" required>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="event_time">Time</label>
+                        <input id="event_time" name="event_time" type="time" value="<?= htmlspecialchars($event['event_time']) ?>">
+                    </div>
+
+                    <div class="form-row">
+                        <label for="guest_count">Guest Count *</label>
+                        <input id="guest_count" name="guest_count" type="number" min="1" value="<?= (int)$event['guest_count'] ?>" required>
+                    </div>
+
                     <div class="form-row">
                         <label for="event_status">Status</label>
                         <select id="event_status" name="event_status">
                             <?php foreach (['Pending', 'Confirmed', 'Completed', 'Cancelled'] as $statusOption): ?>
-                                <option value="<?= $statusOption ?>" <?= $event['event_status'] === $statusOption ? 'selected' : '' ?>><?= $statusOption ?></option>
+                                <option value="<?= $statusOption ?>" <?= $event['event_status'] === $statusOption ? 'selected' : '' ?>>
+                                    <?= $statusOption ?>
+                                </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div class="form-row"><strong>Estimated Total:</strong> <span id="estimated_total">$0.00</span></div>
-                    <div class="form-actions"><button type="submit" class="btn-primary">Save Event</button><a href="admin_events.php">Cancel</a></div>
+
+                    <div class="form-row">
+                        <strong>Estimated Total:</strong>
+                        <span id="estimated_total">$0.00</span>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Save Event</button>
+                        <a href="admin_events.php">Cancel</a>
+                    </div>
                 </form>
             </div>
         </main>
@@ -60,14 +99,17 @@
         const menu = document.getElementById('menu_id');
         const guests = document.getElementById('guest_count');
         const total = document.getElementById('estimated_total');
+
         function updateTotal() {
             const venuePrice = Number(venue.selectedOptions[0].dataset.price || 0);
             const menuPrice = Number(menu.selectedOptions[0].dataset.price || 0);
             total.textContent = '$' + (venuePrice + menuPrice * Number(guests.value || 0)).toFixed(2);
         }
+
         venue.addEventListener('change', updateTotal);
         menu.addEventListener('change', updateTotal);
         guests.addEventListener('input', updateTotal);
+
         updateTotal();
     </script>
 </body>

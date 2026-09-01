@@ -64,7 +64,7 @@
 
             <form action="login.php" method="POST">
                 <div class="input-group">
-                    <label for="username">Email:</label>
+                    <label for="username">Email or Username:</label>
                     <input type="text" id="username" name="username" placeholder="name@example.com" required>
                 </div>
 

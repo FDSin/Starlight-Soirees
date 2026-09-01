@@ -1,11 +1,53 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title><?= htmlspecialchars($pageTitle) ?> - Starlight Soirées</title><link rel="stylesheet" href="../css/dashboard_style.css"></head>
-<body><?php require_once __DIR__ . '/../../sidebar.php'; ?><div class="main-wrapper"><header class="top-header"><h2><?= htmlspecialchars($pageTitle) ?></h2></header><main class="page-content">
-<?php if ($error): ?><div class="error" role="alert"><?= htmlspecialchars($error) ?></div><?php endif; ?>
-<div class="form-card"><form method="POST" action="<?= htmlspecialchars($actionUrl) ?>">
-    <div class="form-row"><label for="venue_name">Venue Name *</label><input id="venue_name" name="venue_name" type="text" value="<?= htmlspecialchars($venue['venue_name']) ?>" required></div>
-    <div class="form-row"><label for="location">Location</label><input id="location" name="location" type="text" value="<?= htmlspecialchars($venue['location']) ?>"></div>
-    <div class="form-row"><label for="max_capacity">Maximum Capacity *</label><input id="max_capacity" name="max_capacity" type="number" min="1" value="<?= htmlspecialchars($venue['max_capacity']) ?>" required></div>
-    <div class="form-row"><label for="venue_price">Venue Price ($) *</label><input id="venue_price" name="venue_price" type="number" min="0" step="0.01" value="<?= htmlspecialchars($venue['venue_price']) ?>" required></div>
-    <div class="form-actions"><button type="submit" class="btn-primary">Save Venue</button><a href="admin_venue.php">Cancel</a></div>
-</form></div></main></div></body></html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><?= htmlspecialchars($pageTitle) ?> - Starlight Soirées</title>
+    <link rel="stylesheet" href="../css/dashboard_style.css">
+</head>
+<body>
+    <?php require_once __DIR__ . '/../../sidebar.php'; ?>
+
+    <div class="main-wrapper">
+        <header class="top-header">
+            <h2><?= htmlspecialchars($pageTitle) ?></h2>
+        </header>
+
+        <main class="page-content">
+            <?php if ($error): ?>
+                <div class="error" role="alert"><?= htmlspecialchars($error) ?></div>
+            <?php endif; ?>
+
+            <div class="form-card">
+                <form method="POST" action="<?= htmlspecialchars($actionUrl) ?>">
+                    <div class="form-row">
+                        <label for="venue_name">Venue Name *</label>
+                        <input id="venue_name" name="venue_name" type="text" value="<?= htmlspecialchars($venue['venue_name']) ?>" required>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="location">Location</label>
+                        <input id="location" name="location" type="text" value="<?= htmlspecialchars($venue['location']) ?>">
+                    </div>
+
+                    <div class="form-row">
+                        <label for="max_capacity">Maximum Capacity *</label>
+                        <input id="max_capacity" name="max_capacity" type="number" min="1" value="<?= htmlspecialchars($venue['max_capacity']) ?>" required>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="venue_price">Venue Price ($) *</label>
+                        <input id="venue_price" name="venue_price" type="number" min="0" step="0.01" value="<?= htmlspecialchars($venue['venue_price']) ?>" required>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Save Venue</button>
+                        <a href="admin_venue.php">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

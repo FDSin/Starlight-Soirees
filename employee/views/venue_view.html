@@ -1,6 +1,43 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>View Venue - Starlight Soirées</title><link rel="stylesheet" href="../css/dashboard_style.css"></head>
-<body><?php require_once __DIR__ . '/../../sidebar.php'; ?><div class="main-wrapper"><header class="top-header"><h2>Venue Details</h2></header><main class="page-content"><div class="form-card">
-<div class="form-row"><strong>Name:</strong> <?= htmlspecialchars($venue['venue_name']) ?></div><div class="form-row"><strong>Location:</strong> <?= htmlspecialchars($venue['location']) ?></div><div class="form-row"><strong>Maximum Capacity:</strong> <?= (int)$venue['max_capacity'] ?></div><div class="form-row"><strong>Price:</strong> $<?= number_format((float)$venue['venue_price'], 2) ?></div>
-<div class="form-actions"><a href="edit_venue.php?id=<?= (int)$venue['venue_id'] ?>">Edit</a><a href="admin_venue.php">Back</a></div>
-</div></main></div></body></html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>View Venue - Starlight Soirées</title>
+    <link rel="stylesheet" href="../css/dashboard_style.css">
+</head>
+<body>
+    <?php require_once __DIR__ . '/../../sidebar.php'; ?>
+
+    <div class="main-wrapper">
+        <header class="top-header">
+            <h2>Venue Details</h2>
+        </header>
+
+        <main class="page-content">
+            <div class="form-card">
+                <div class="form-row">
+                    <strong>Name:</strong>
+                    <?= htmlspecialchars($venue['venue_name']) ?>
+                </div>
+                <div class="form-row">
+                    <strong>Location:</strong>
+                    <?= htmlspecialchars($venue['location']) ?>
+                </div>
+                <div class="form-row">
+                    <strong>Maximum Capacity:</strong>
+                    <?= (int)$venue['max_capacity'] ?>
+                </div>
+                <div class="form-row">
+                    <strong>Price:</strong>
+                    $<?= number_format((float)$venue['venue_price'], 2) ?>
+                </div>
+                <div class="form-actions">
+                    <a href="edit_venue.php?id=<?= (int)$venue['venue_id'] ?>">Edit</a>
+                    <a href="admin_venue.php">Back</a>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
