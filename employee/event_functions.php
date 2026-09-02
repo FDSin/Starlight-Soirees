@@ -1,13 +1,13 @@
 <?php
 
+require_once __DIR__ . '/../config.php';
+
 function validateEvent(PDO $pdo, array $event, int $ignoreEventId = 0): string
 {
-    $allowedStatuses = ['Pending', 'Confirmed', 'Completed', 'Cancelled'];
-
     if ($event['title'] === '') return 'Event name is required.';
     if ($event['event_date'] === '') return 'Event date is required.';
     if ($event['guest_count'] < 1) return 'Guest count must be at least 1.';
-    if (!in_array($event['event_status'], $allowedStatuses, true)) return 'Please choose a valid event status.';
+    if (!in_array($event['event_status'], EVENT_STATUSES, true)) return 'Please choose a valid event status.';
 
     if ($event['venue_id']) {
         $stmt = $pdo->prepare('SELECT max_capacity FROM venues WHERE venue_id = :venue_id');

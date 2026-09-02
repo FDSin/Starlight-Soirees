@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?= htmlspecialchars($pageTitle) ?> - Starlight Soirées</title>
-    <link rel="stylesheet" href="../css/dashboard_style.css">
+    <link rel="stylesheet" href="../css/dashboard_style.css?">
 </head>
 <body>
     <?php require_once __DIR__ . '/../../sidebar.php'; ?>
@@ -73,7 +72,7 @@
                     <div class="form-row">
                         <label for="event_status">Status</label>
                         <select id="event_status" name="event_status">
-                            <?php foreach (['Pending', 'Confirmed', 'Completed', 'Cancelled'] as $statusOption): ?>
+                            <?php foreach (EVENT_STATUSES as $statusOption): ?>
                                 <option value="<?= $statusOption ?>" <?= $event['event_status'] === $statusOption ? 'selected' : '' ?>>
                                     <?= $statusOption ?>
                                 </option>

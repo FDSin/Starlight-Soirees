@@ -1,8 +1,7 @@
 <?php
-session_start();
-require_once __DIR__ . '/../check_auth.php';
-require_once __DIR__ . '/../db.php';
+require_once __DIR__ . '/bootstrap.php';
 require_once __DIR__ . '/event_functions.php';
+require_once __DIR__ . '/payment_functions.php';
 
 $id = (int)($_GET['id'] ?? 0);
 if ($id <= 0) { header('Location: admin_events.php'); exit; }
@@ -42,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     if ($error === '') {
         try {
+            $pdo->beginTransaction();
             $stmt = $pdo->prepare(
                 'UPDATE events SET venue_id = :venue_id, menu_id = :menu_id, title = :title,
                  description = :description, event_date = :event_date, event_time = :event_time,
@@ -58,18 +58,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'event_status' => $event['event_status'],
                 'event_id' => $id,
             ]);
-            $stmt = $pdo->prepare(
-                'UPDATE payments p
-                 JOIN events e ON e.event_id = p.event_id
-                 JOIN venues v ON v.venue_id = e.venue_id
-                 JOIN menus m ON m.menu_id = e.menu_id
-                 SET p.total_amount = v.venue_price + (m.price_per_person * e.guest_count)
-                 WHERE p.event_id = :event_id'
-            );
-            $stmt->execute(['event_id' => $id]);
+            recalculatePaymentForEvent($pdo, $id);
+            $pdo->commit();
             header('Location: admin_events.php');
             exit;
         } catch (Exception $e) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
             $error = 'Event could not be updated. Please check the entered information.';
         }
     }

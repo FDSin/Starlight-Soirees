@@ -1,8 +1,8 @@
-document.addEventListener('DOMContentLoaded', function() {
-    var calendarEl = document.getElementById('calendar');
+document.addEventListener('DOMContentLoaded', function () {
+    const calendarEl = document.getElementById('calendar');
 
     if (calendarEl) {
-        var calendar = new FullCalendar.Calendar(calendarEl, {
+        const calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             aspectRatio: 1.8,
             contentHeight: 'auto',
@@ -16,15 +16,13 @@ document.addEventListener('DOMContentLoaded', function() {
             eventClick: function(info) {
                 alert('Event Details: ' + info.event.title);
             },
-
-            loading: function(isloading) {
-                if (!isloading){
-                    console.log('Calendar loaded successfully!');
-                }
+            eventSourceFailure: function () {
+                console.error('Calendar events could not be loaded.');
             }
         });
+
         calendar.render();
     } else {
-        console.error("Element #calendar not found in DOM");
+        console.error('Element #calendar not found in DOM');
     }
 });

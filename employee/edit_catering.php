@@ -1,7 +1,7 @@
 <?php
-session_start();
-require_once __DIR__ . '/../check_auth.php';
-require_once __DIR__ . '/../db.php';
+require_once __DIR__ . '/bootstrap.php';
+require_once __DIR__ . '/resource_functions.php';
+require_once __DIR__ . '/payment_functions.php';
 
 $id = (int)($_GET['id'] ?? 0);
 if ($id <= 0) { header('Location: admin_food.php'); exit; }
@@ -21,24 +21,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'description' => trim($_POST['description'] ?? ''),
         'price_per_person' => trim($_POST['price_per_person'] ?? ''),
     ];
-    if ($menu['package_name'] === '') $error = 'Package name is required.';
-    elseif (!is_numeric($menu['price_per_person']) || (float)$menu['price_per_person'] < 0) $error = 'Price per person must be a valid positive amount.';
-    else {
-        $stmt = $pdo->prepare(
-            'UPDATE menus SET package_name = :package_name, price_per_person = :price_per_person,
-             description = :description WHERE menu_id = :menu_id'
-        );
-        $stmt->execute($menu);
-        $stmt = $pdo->prepare(
-            'UPDATE payments p
-             JOIN events e ON e.event_id = p.event_id
-             JOIN venues v ON v.venue_id = e.venue_id
-             SET p.total_amount = v.venue_price + (:menu_price * e.guest_count)
-             WHERE e.menu_id = :menu_id'
-        );
-        $stmt->execute(['menu_price' => $menu['price_per_person'], 'menu_id' => $id]);
-        header('Location: admin_food.php');
-        exit;
+    $error = validateMenuPackage($menu);
+    if ($error === '') {
+        try {
+            $pdo->beginTransaction();
+            $stmt = $pdo->prepare(
+                'UPDATE menus SET package_name = :package_name, price_per_person = :price_per_person,
+                 description = :description WHERE menu_id = :menu_id'
+            );
+            $stmt->execute($menu);
+            recalculatePaymentsForMenu($pdo, $id, (float)$menu['price_per_person']);
+            $pdo->commit();
+            header('Location: admin_food.php');
+            exit;
+        } catch (Exception $e) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            $error = 'Menu package could not be updated. Please try again.';
+        }
     }
 }
 

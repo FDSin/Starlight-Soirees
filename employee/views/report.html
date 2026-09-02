@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Reports - Starlight Soirées</title>
-    <link rel="stylesheet" href="../css/dashboard_style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../css/dashboard_style.css?">
 </head>
 <body>
     <?php require_once __DIR__ . '/../../sidebar.php'; ?>
@@ -12,18 +13,22 @@
             <h2>Reports</h2>
         </header>
 
-        <main style="padding:20px;">
-            <form method="GET" style="margin-bottom:12px;">
-                <label>
-                    From:
-                    <input type="date" name="from" value="<?= htmlspecialchars($from ?? '') ?>">
-                </label>
-                <label>
-                    To:
-                    <input type="date" name="to" value="<?= htmlspecialchars($to ?? '') ?>">
-                </label>
-                <button type="submit">Generate Report</button>
-                <button type="button" onclick="window.print()">Print Report</button>
+        <main class="page-content">
+            <form method="GET" class="filter-form report-filter">
+                <div class="filter-field">
+                    <label for="report-from">From</label>
+                    <input id="report-from" type="date" name="from" value="<?= htmlspecialchars($from ?? '') ?>">
+                </div>
+
+                <div class="filter-field">
+                    <label for="report-to">To</label>
+                    <input id="report-to" type="date" name="to" value="<?= htmlspecialchars($to ?? '') ?>">
+                </div>
+
+                <div class="filter-actions">
+                    <button type="submit" class="btn-primary">Generate Report</button>
+                    <button type="button" class="btn-primary" onclick="window.print()">Print Report</button>
+                </div>
             </form>
 
             <?php if (!empty($error)): ?>
@@ -31,7 +36,8 @@
             <?php endif; ?>
 
             <?php if (!empty($reportData)): ?>
-                <table class="table">
+                <div class="table-scroll">
+                    <table class="table">
                     <thead>
                         <tr>
                             <th>Event</th>
@@ -52,11 +58,16 @@
                                 <td><?= htmlspecialchars($r['venue_name'] ?? '') ?></td>
                                 <td><?= htmlspecialchars($r['package_name'] ?? '') ?></td>
                                 <td>$<?= number_format((float)$r['estimated_total'], 2) ?></td>
-                                <td><?= htmlspecialchars($r['event_status']) ?></td>
+                                <td>
+                                    <span class="status-badge <?= statusClass($r['event_status']) ?>">
+                                        <?= htmlspecialchars($r['event_status']) ?>
+                                    </span>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
-                </table>
+                    </table>
+                </div>
             <?php else: ?>
                 <div class="form-card">No data for that date range, or the <code>events</code> table does not exist.</div>
             <?php endif; ?>

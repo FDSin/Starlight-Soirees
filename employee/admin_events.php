@@ -1,7 +1,5 @@
 <?php
-session_start();
-require_once __DIR__ . '/../check_auth.php';
-require_once __DIR__ . '/../db.php';
+require_once __DIR__ . '/bootstrap.php';
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete') {

@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>View Payment - Starlight Soirées</title>
-    <link rel="stylesheet" href="../css/dashboard_style.css">
+    <link rel="stylesheet" href="../css/dashboard_style.css?">
 </head>
 <body>
     <?php require_once __DIR__ . '/../../sidebar.php'; ?>
@@ -30,7 +29,9 @@
                 </div>
                 <div class="form-row">
                     <strong>Status:</strong>
-                    <?= htmlspecialchars($p['payment_status']) ?>
+                    <span class="status-badge <?= statusClass($p['payment_status']) ?>">
+                        <?= htmlspecialchars($p['payment_status']) ?>
+                    </span>
                 </div>
                 <div class="form-row">
                     <strong>Payment Date:</strong>

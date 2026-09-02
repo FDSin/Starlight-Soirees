@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Payments - Starlight Soirées</title>
-    <link rel="stylesheet" href="../css/dashboard_style.css">
+    <link rel="stylesheet" href="../css/dashboard_style.css?">
 </head>
 <body>
     <?php require_once __DIR__ . '/../../sidebar.php'; ?>
@@ -18,24 +17,28 @@
             <a href="add_payment.php" class="btn-primary">+ Add Payment</a>
 
             <form method="GET" class="filter-form">
-                <label for="payment-search">Search</label>
-                <input
-                    id="payment-search"
-                    type="search"
-                    name="search"
-                    placeholder="Event name or ID"
-                    value="<?= htmlspecialchars($search) ?>"
-                >
+                <div class="filter-field">
+                    <label for="payment-search">Search</label>
+                    <input
+                        id="payment-search"
+                        type="search"
+                        name="search"
+                        placeholder="Event name or ID"
+                        value="<?= htmlspecialchars($search) ?>"
+                    >
+                </div>
 
-                <label for="payment-status-filter">Status</label>
-                <select id="payment-status-filter" name="status">
-                    <option value="">All statuses</option>
-                    <?php foreach (['Unpaid', 'Pending Approval', 'Paid'] as $option): ?>
-                        <option value="<?= $option ?>" <?= $status === $option ? 'selected' : '' ?>>
-                            <?= $option ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+                <div class="filter-field">
+                    <label for="payment-status-filter">Status</label>
+                    <select id="payment-status-filter" name="status">
+                        <option value="">All statuses</option>
+                        <?php foreach (PAYMENT_STATUSES as $option): ?>
+                            <option value="<?= $option ?>" <?= $status === $option ? 'selected' : '' ?>>
+                                <?= $option ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
 
                 <button type="submit" class="btn-primary">Filter</button>
             </form>
@@ -47,7 +50,8 @@
             <?php if (!$payments): ?>
                 <div class="form-card">No payments found.</div>
             <?php else: ?>
-                <table class="table">
+                <div class="table-scroll">
+                    <table class="table">
                     <thead>
                         <tr>
                             <th>Event</th>
@@ -63,11 +67,15 @@
                                 <td>#<?= (int)$payment['event_id'] ?> - <?= htmlspecialchars($payment['title']) ?></td>
                                 <td>$<?= number_format((float)$payment['total_amount'], 2) ?></td>
                                 <td><?= htmlspecialchars($payment['payment_date'] ?? '') ?></td>
-                                <td><?= htmlspecialchars($payment['payment_status']) ?></td>
+                                <td>
+                                    <span class="status-badge <?= statusClass($payment['payment_status']) ?>">
+                                        <?= htmlspecialchars($payment['payment_status']) ?>
+                                    </span>
+                                </td>
                                 <td>
                                     <a href="view_payment.php?id=<?= (int)$payment['payment_id'] ?>">View</a> |
                                     <a href="edit_payment.php?id=<?= (int)$payment['payment_id'] ?>">Edit</a> |
-                                    <form method="POST" action="admin_payment.php" style="display:inline;">
+                                    <form method="POST" action="admin_payment.php" class="inline-form">
                                         <input type="hidden" name="action" value="delete">
                                         <input type="hidden" name="payment_id" value="<?= (int)$payment['payment_id'] ?>">
                                         <button type="submit" class="btn-danger" onclick="return confirm('Delete this payment?')">Delete</button>
@@ -76,7 +84,8 @@
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
-                </table>
+                    </table>
+                </div>
             <?php endif; ?>
         </main>
     </div>

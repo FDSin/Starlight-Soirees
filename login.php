@@ -11,7 +11,7 @@
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $username = trim($_POST['username'] ?? '');
-        $password = trim($_POST['password'] ?? '');
+        $password = $_POST['password'] ?? '';
 
         if (!empty($username) && !empty($password)) {
             try {
@@ -20,6 +20,7 @@
                 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
                 if ($user && password_verify($password, $user['password'])) {
+                    session_regenerate_id(true);
                     $_SESSION['user_id'] = $user['user_id'];
                     $_SESSION['username'] = $user['username'];
 
@@ -29,7 +30,8 @@
                     $error = "Invalid email or password.";
                 }
             } catch (PDOException $e) {
-                $error = "Database error: " . $e->getMessage();
+                error_log($e->getMessage());
+                $error = "The login service is temporarily unavailable.";
             }
         } else {
             $error = "Please fill in all necessary fields.";
@@ -38,27 +40,22 @@
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Employee Login - Starlight Soirées</title>
         <link rel="stylesheet" href="css/login_style.css">
     </head>
     <body>
         <section class="login-card">
-            <header>
+            <header class="login-header">
                 <h1>Starlight Soirées</h1>
             </header>
 
             <?php if (!empty($error)): ?>
-                <div style="background: rgba(239, 68, 68, 0.2); 
-                    border: 1px solid #ef4444; 
-                    color: #fca5a5; 
-                    padding: 10px; 
-                    border-radius: 8px; 
-                    margin-bottom: 20px; 
-                    text-align: center; 
-                    font-size: 13px;">
-                <?= htmlspecialchars($error) ?>
+                <div class="login-error" role="alert">
+                    <?= htmlspecialchars($error) ?>
                 </div>
             <?php endif; ?>
 

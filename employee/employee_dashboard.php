@@ -1,24 +1,17 @@
 <?php
-session_start();
-require_once __DIR__ . '/../check_auth.php';
-if (!isset($_SESSION['user_id'])) {
-    header('Location: ../login.php'); exit;
-}
-
-require_once __DIR__ . '/../db.php';
+require_once __DIR__ . '/bootstrap.php';
 $activeEvents = 0;
 $pendingTasks = 0;
 try {
-    $stmt = $pdo->query("SHOW TABLES LIKE 'events'");
-    if ($stmt && $stmt->rowCount() > 0) {
-        $eventStmt = $pdo->query("SELECT COUNT(*) AS total FROM events WHERE event_status IN ('Pending', 'Confirmed')");
-        $eventRow = $eventStmt->fetch();
-        $activeEvents = (int)($eventRow['total'] ?? 0);
-
-        $pendingStmt = $pdo->query("SELECT COUNT(*) AS total FROM events WHERE event_status = 'Pending'");
-        $pendingRow = $pendingStmt->fetch();
-        $pendingTasks = (int)($pendingRow['total'] ?? 0);
-    }
+    $stmt = $pdo->query(
+        "SELECT
+            SUM(event_status IN ('Pending', 'Confirmed')) AS active_events,
+            SUM(event_status = 'Pending') AS pending_tasks
+         FROM events"
+    );
+    $counts = $stmt->fetch();
+    $activeEvents = (int)($counts['active_events'] ?? 0);
+    $pendingTasks = (int)($counts['pending_tasks'] ?? 0);
 } catch (Exception $e) {
     $activeEvents = 0;
     $pendingTasks = 0;

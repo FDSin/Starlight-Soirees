@@ -13,14 +13,16 @@ CREATE TABLE venues (
     venue_name VARCHAR(100) NOT NULL,
     max_capacity INT NOT NULL,
     venue_price DECIMAL(10,2) NOT NULL,
-    location VARCHAR(255) DEFAULT NULL
+    location VARCHAR(255) DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
 CREATE TABLE menus (
     menu_id INT AUTO_INCREMENT PRIMARY KEY,
     package_name VARCHAR(100) NOT NULL,
     price_per_person DECIMAL(10,2) NOT NULL,
-    description TEXT DEFAULT NULL
+    description TEXT DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
 CREATE TABLE events (
@@ -48,6 +50,7 @@ CREATE TABLE payments (
     payment_status ENUM('Unpaid', 'Pending Approval', 'Paid') DEFAULT 'Unpaid',
     receipt_file VARCHAR(255) DEFAULT NULL,
     payment_date DATETIME DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (event_id) REFERENCES events(event_id)
 ) ENGINE=InnoDB;
 

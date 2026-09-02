@@ -1,11 +1,17 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) session_start();
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 $current = basename($_SERVER['PHP_SELF']);
 $inEmployee = (strpos($_SERVER['PHP_SELF'], '/employee/') !== false);
+$logoutHref = $inEmployee ? '../logout.php' : 'logout.php';
 ?>
 <aside class="sidebar">
     <div class="brand">Starlight Soirées</div>
-    <ul class="sidebar-nav">
+    <nav aria-label="Employee navigation">
+        <ul class="sidebar-nav">
         <?php
         $items = [
             ['label' => 'Home', 'file' => 'employee_dashboard.php'],
@@ -25,18 +31,19 @@ $inEmployee = (strpos($_SERVER['PHP_SELF'], '/employee/') !== false);
             'admin_report.php' => ['admin_report.php'],
         ];
 
-        foreach ($items as $it) {
-            $href = $inEmployee ? $it['file'] : ('employee/' . $it['file']);
-            $isActive = '';
-            if (isset($groups[$it['file']]) && in_array($current, $groups[$it['file']])) {
-                $isActive = 'active';
-            }
-            echo "<li><a class=\"{$isActive}\" href=\"{$href}\">{$it['label']}</a></li>";
+        foreach ($items as $item) {
+            $href = $inEmployee ? $item['file'] : ('employee/' . $item['file']);
+            $isActive = isset($groups[$item['file']]) && in_array($current, $groups[$item['file']], true);
+            $activeClass = $isActive ? 'active' : '';
+            $ariaCurrent = $isActive ? ' aria-current="page"' : '';
+            echo '<li><a class="' . $activeClass . '" href="' . htmlspecialchars($href) . '"' . $ariaCurrent . '>'
+                . htmlspecialchars($item['label']) . '</a></li>';
         }
         ?>
-    </ul>
+        </ul>
+    </nav>
 
     <div class="sidebar-footer">
-        <a class="logout-link" href="../logout.php">Logout</a>
+        <a class="logout-link" href="<?= htmlspecialchars($logoutHref) ?>">Logout</a>
     </div>
 </aside>

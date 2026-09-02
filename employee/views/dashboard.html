@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Employee Dashboard - Starlight Soirées</title>
-    <link rel="stylesheet" href="../css/dashboard_style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../css/dashboard_style.css?">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
 </head>
 <body>
@@ -28,12 +29,17 @@
             </div>
             <div class="card">
                 <h3 class="card-title">Quick Actions</h3>
-                <a href="add_event.php" class="btn-primary">New Event</a>
+                <div class="quick-actions">
+                    <a href="add_event.php" class="btn-primary">New Event</a>
+                    <a href="add_payment.php" class="btn-primary">New Payment</a>
+                    <a href="add_venue.php" class="btn-primary">New Venue</a>
+                    <a href="add_catering.php" class="btn-primary">New Food</a>
+                </div>
             </div>
         </main>
 
-        <div class="card" style="grid-column: span 3; padding: 15px; min-height: auto">
-            <div id="calendar" style="min-height: 550px"></div>
+        <div class="card calendar-card">
+            <div id="calendar"></div>
         </div>
     </div>
 

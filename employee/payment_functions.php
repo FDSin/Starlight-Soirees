@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../config.php';
+
 function calculateEventTotal(PDO $pdo, int $eventId): ?float
 {
     $stmt = $pdo->prepare(
@@ -15,6 +17,63 @@ function calculateEventTotal(PDO $pdo, int $eventId): ?float
     if (!$event) return null;
 
     return round((float)$event['venue_price'] + ((float)$event['price_per_person'] * (int)$event['guest_count']), 2);
+}
+
+function recalculatePaymentForEvent(PDO $pdo, int $eventId): void
+{
+    $stmt = $pdo->prepare(
+        'UPDATE payments p
+         JOIN events e ON e.event_id = p.event_id
+         JOIN venues v ON v.venue_id = e.venue_id
+         JOIN menus m ON m.menu_id = e.menu_id
+         SET p.total_amount = v.venue_price + (m.price_per_person * e.guest_count)
+         WHERE p.event_id = :event_id'
+    );
+    $stmt->execute(['event_id' => $eventId]);
+}
+
+function recalculatePaymentsForVenue(PDO $pdo, int $venueId, float $venuePrice): void
+{
+    $stmt = $pdo->prepare(
+        'UPDATE payments p
+         JOIN events e ON e.event_id = p.event_id
+         JOIN menus m ON m.menu_id = e.menu_id
+         SET p.total_amount = :venue_price + (m.price_per_person * e.guest_count)
+         WHERE e.venue_id = :venue_id'
+    );
+
+    $stmt->execute(['venue_price' => $venuePrice, 'venue_id' => $venueId]);
+}
+
+function recalculatePaymentsForMenu(PDO $pdo, int $menuId, float $menuPrice): void
+{
+    $stmt = $pdo->prepare(
+        'UPDATE payments p
+         JOIN events e ON e.event_id = p.event_id
+         JOIN venues v ON v.venue_id = e.venue_id
+         SET p.total_amount = v.venue_price + (:menu_price * e.guest_count)
+         WHERE e.menu_id = :menu_id'
+    );
+
+    $stmt->execute(['menu_price' => $menuPrice, 'menu_id' => $menuId]);
+}
+
+function validatePayment(array $payment): string
+{
+    if (!$payment['event_id']) {
+        return 'Please select an event.';
+    }
+    if ($payment['total_amount'] === null) {
+        return 'Choose a venue and menu for this event before saving its payment.';
+    }
+    if (!in_array($payment['payment_method'], PAYMENT_METHODS, true)) {
+        return 'Please select a payment method.';
+    }
+    if (!in_array($payment['payment_status'], PAYMENT_STATUSES, true)) {
+        return 'Please select a valid payment status.';
+    }
+
+    return '';
 }
 
 function saveReceipt(array $file, string $currentFile = ''): string

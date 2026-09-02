@@ -3,29 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Menu Packages - Starlight Soirées</title>
-    <link rel="stylesheet" href="../css/dashboard_style.css">
+    <link rel="stylesheet" href="../css/dashboard_style.css?">
 </head>
 <body>
     <?php require_once __DIR__ . '/../../sidebar.php'; ?>
 
     <div class="main-wrapper">
         <header class="top-header">
-            <h2>Food &amp; Catering</h2>
+            <h2>Food & Catering</h2>
         </header>
 
         <main class="page-content">
             <a href="add_catering.php" class="btn-primary">+ Add Menu Package</a>
 
             <form method="GET" class="filter-form">
-                <label for="menu-search">Search</label>
-                <input
-                    id="menu-search"
-                    type="search"
-                    name="search"
-                    placeholder="Package name"
-                    value="<?= htmlspecialchars($search) ?>"
-                >
+                <div class="filter-field">
+                    <label for="menu-search">Search</label>
+                    <input
+                        id="menu-search"
+                        type="search"
+                        name="search"
+                        placeholder="Package name"
+                        value="<?= htmlspecialchars($search) ?>"
+                    >
+                </div>
                 <button type="submit" class="btn-primary">Search</button>
             </form>
 
@@ -36,7 +37,8 @@
             <?php if (!$menus): ?>
                 <div class="form-card">No menu packages found.</div>
             <?php else: ?>
-                <table class="table">
+                <div class="table-scroll">
+                    <table class="table">
                     <thead>
                         <tr>
                             <th>Package</th>
@@ -54,7 +56,7 @@
                                 <td>
                                     <a href="view_catering.php?id=<?= (int)$menu['menu_id'] ?>">View</a> |
                                     <a href="edit_catering.php?id=<?= (int)$menu['menu_id'] ?>">Edit</a> |
-                                    <form method="POST" action="admin_food.php" style="display:inline;">
+                                    <form method="POST" action="admin_food.php" class="inline-form">
                                         <input type="hidden" name="action" value="delete">
                                         <input type="hidden" name="menu_id" value="<?= (int)$menu['menu_id'] ?>">
                                         <button type="submit" class="btn-danger" onclick="return confirm('Delete this menu package?')">Delete</button>
@@ -63,7 +65,8 @@
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
-                </table>
+                    </table>
+                </div>
             <?php endif; ?>
         </main>
     </div>

@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?= htmlspecialchars($pageTitle) ?> - Starlight Soirées</title>
-    <link rel="stylesheet" href="../css/dashboard_style.css">
+    <link rel="stylesheet" href="../css/dashboard_style.css?">
 </head>
 <body>
     <?php require_once __DIR__ . '/../../sidebar.php'; ?>
@@ -53,7 +52,7 @@
                         <label for="payment_method">Payment Method *</label>
                         <select id="payment_method" name="payment_method" required>
                             <option value="">Select method</option>
-                            <?php foreach (['Bank Transfer', 'Credit Card'] as $method): ?>
+                            <?php foreach (PAYMENT_METHODS as $method): ?>
                                 <option value="<?= $method ?>" <?= $p['payment_method'] === $method ? 'selected' : '' ?>>
                                     <?= $method ?>
                                 </option>
@@ -64,7 +63,7 @@
                     <div class="form-row">
                         <label for="payment_status">Payment Status</label>
                         <select id="payment_status" name="payment_status">
-                            <?php foreach (['Unpaid', 'Pending Approval', 'Paid'] as $statusOption): ?>
+                            <?php foreach (PAYMENT_STATUSES as $statusOption): ?>
                                 <option value="<?= $statusOption ?>" <?= $p['payment_status'] === $statusOption ? 'selected' : '' ?>>
                                     <?= $statusOption ?>
                                 </option>

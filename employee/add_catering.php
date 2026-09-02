@@ -1,7 +1,6 @@
 <?php
-session_start();
-require_once __DIR__ . '/../check_auth.php';
-require_once __DIR__ . '/../db.php';
+require_once __DIR__ . '/bootstrap.php';
+require_once __DIR__ . '/resource_functions.php';
 
 $pageTitle = 'Add Menu Package';
 $actionUrl = 'add_catering.php';
@@ -14,16 +13,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'description' => trim($_POST['description'] ?? ''),
         'price_per_person' => trim($_POST['price_per_person'] ?? ''),
     ];
-    if ($menu['package_name'] === '') $error = 'Package name is required.';
-    elseif (!is_numeric($menu['price_per_person']) || (float)$menu['price_per_person'] < 0) $error = 'Price per person must be a valid positive amount.';
-    else {
-        $stmt = $pdo->prepare(
-            'INSERT INTO menus (package_name, price_per_person, description)
-             VALUES (:package_name, :price_per_person, :description)'
-        );
-        $stmt->execute($menu);
-        header('Location: admin_food.php');
-        exit;
+    $error = validateMenuPackage($menu);
+    if ($error === '') {
+        try {
+            $stmt = $pdo->prepare(
+                'INSERT INTO menus (package_name, price_per_person, description)
+                 VALUES (:package_name, :price_per_person, :description)'
+            );
+            $stmt->execute($menu);
+            header('Location: admin_food.php');
+            exit;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            $error = 'Menu package could not be saved. Please try again.';
+        }
     }
 }
 

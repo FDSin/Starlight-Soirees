@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>View Event - Starlight Soirées</title>
-    <link rel="stylesheet" href="../css/dashboard_style.css">
+    <link rel="stylesheet" href="../css/dashboard_style.css?">
 </head>
 <body>
     <?php require_once __DIR__ . '/../../sidebar.php'; ?>
@@ -42,7 +41,9 @@
                 </div>
                 <div class="form-row">
                     <strong>Status:</strong>
-                    <?= htmlspecialchars($event['event_status']) ?>
+                    <span class="status-badge <?= statusClass($event['event_status']) ?>">
+                        <?= htmlspecialchars($event['event_status']) ?>
+                    </span>
                 </div>
                 <div class="form-row">
                     <strong>Estimated Total:</strong>

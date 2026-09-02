@@ -1,7 +1,5 @@
 <?php
-session_start();
-require_once __DIR__ . '/../check_auth.php';
-require_once __DIR__ . '/../db.php';
+require_once __DIR__ . '/bootstrap.php';
 require_once __DIR__ . '/payment_functions.php';
 
 $pageTitle = 'Add Payment';
@@ -19,13 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $p['payment_date'] = $_POST['payment_date'] ?? '';
     $p['total_amount'] = calculateEventTotal($pdo, $p['event_id']);
 
-    $allowedMethods = ['Bank Transfer', 'Credit Card'];
-    $allowedStatuses = ['Unpaid', 'Pending Approval', 'Paid'];
-    if (!$p['event_id']) $error = 'Please select an event.';
-    elseif ($p['total_amount'] === null) $error = 'Choose a venue and menu for this event before creating its payment.';
-    elseif (!in_array($p['payment_method'], $allowedMethods, true)) $error = 'Please select a payment method.';
-    elseif (!in_array($p['payment_status'], $allowedStatuses, true)) $error = 'Please select a valid payment status.';
-    else {
+    $error = validatePayment($p);
+    if ($error === '') {
         $stmt = $pdo->prepare('SELECT COUNT(*) FROM payments WHERE event_id = :event_id');
         $stmt->execute(['event_id' => $p['event_id']]);
         if ((int)$stmt->fetchColumn() > 0) {
@@ -48,6 +41,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ]);
                 header('Location: admin_payment.php');
                 exit;
+            } catch (PDOException $e) {
+                error_log($e->getMessage());
+                $error = 'Payment could not be saved. Please try again.';
             } catch (Exception $e) {
                 $error = $e->getMessage();
             }

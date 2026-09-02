@@ -1,7 +1,5 @@
 <?php
-session_start();
-require_once __DIR__ . '/../check_auth.php';
-require_once __DIR__ . '/../db.php';
+require_once __DIR__ . '/bootstrap.php';
 
 $id = (int)($_GET['id'] ?? 0);
 if ($id <= 0) { header('Location: admin_venue.php'); exit; }

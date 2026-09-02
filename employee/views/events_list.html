@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Events - Starlight Soirées</title>
-    <link rel="stylesheet" href="../css/dashboard_style.css">
+    <link rel="stylesheet" href="../css/dashboard_style.css?">
 </head>
 <body>
     <?php require_once __DIR__ . '/../../sidebar.php'; ?>
@@ -15,33 +14,41 @@
         </header>
 
         <main class="page-content">
-            <a href="add_event.php" class="btn-primary" style="margin-bottom:12px; display:inline-block;">+ Add Event</a>
+            <a href="add_event.php" class="btn-primary page-primary-action">+ Add Event</a>
 
             <form method="GET" class="filter-form">
-                <label for="event-search">Search</label>
-                <input
-                    id="event-search"
-                    type="search"
-                    name="search"
-                    placeholder="Event, venue, or menu"
-                    value="<?= htmlspecialchars($search) ?>"
-                >
+                <div class="filter-field">
+                    <label for="event-search">Search</label>
+                    <input
+                        id="event-search"
+                        type="search"
+                        name="search"
+                        placeholder="Event, venue, or menu"
+                        value="<?= htmlspecialchars($search) ?>"
+                    >
+                </div>
 
-                <label for="event-status-filter">Status</label>
-                <select id="event-status-filter" name="status">
-                    <option value="">All statuses</option>
-                    <?php foreach (['Pending', 'Confirmed', 'Completed', 'Cancelled'] as $option): ?>
-                        <option value="<?= $option ?>" <?= $status === $option ? 'selected' : '' ?>>
-                            <?= $option ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+                <div class="filter-field">
+                    <label for="event-status-filter">Status</label>
+                    <select id="event-status-filter" name="status">
+                        <option value="">All statuses</option>
+                        <?php foreach (EVENT_STATUSES as $option): ?>
+                            <option value="<?= $option ?>" <?= $status === $option ? 'selected' : '' ?>>
+                                <?= $option ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
 
-                <label for="date-from">From</label>
-                <input id="date-from" type="date" name="date_from" value="<?= htmlspecialchars($dateFrom) ?>">
+                <div class="filter-field">
+                    <label for="date-from">From</label>
+                    <input id="date-from" type="date" name="date_from" value="<?= htmlspecialchars($dateFrom) ?>">
+                </div>
 
-                <label for="date-to">To</label>
-                <input id="date-to" type="date" name="date_to" value="<?= htmlspecialchars($dateTo) ?>">
+                <div class="filter-field">
+                    <label for="date-to">To</label>
+                    <input id="date-to" type="date" name="date_to" value="<?= htmlspecialchars($dateTo) ?>">
+                </div>
 
                 <button type="submit" class="btn-primary">Filter</button>
             </form>
@@ -53,7 +60,8 @@
             <?php if (!$events): ?>
                 <div class="form-card">No events found. Add an event to get started.</div>
             <?php else: ?>
-                <table class="table">
+                <div class="table-scroll">
+                    <table class="table">
                     <thead>
                         <tr>
                             <th>Event</th>
@@ -73,11 +81,15 @@
                                 <td><?= (int)$ev['guest_count'] ?></td>
                                 <td><?= htmlspecialchars($ev['venue_name'] ?? 'Not chosen') ?></td>
                                 <td><?= htmlspecialchars($ev['package_name'] ?? 'Not chosen') ?></td>
-                                <td><?= htmlspecialchars($ev['event_status']) ?></td>
+                                <td>
+                                    <span class="status-badge <?= statusClass($ev['event_status']) ?>">
+                                        <?= htmlspecialchars($ev['event_status']) ?>
+                                    </span>
+                                </td>
                                 <td>
                                     <a href="view_event.php?id=<?= (int)$ev['event_id'] ?>">View</a> |
                                     <a href="edit_event.php?id=<?= (int)$ev['event_id'] ?>">Edit</a> |
-                                    <form method="POST" action="admin_events.php" style="display:inline;">
+                                    <form method="POST" action="admin_events.php" class="inline-form">
                                         <input type="hidden" name="action" value="delete">
                                         <input type="hidden" name="event_id" value="<?= (int)$ev['event_id'] ?>">
                                         <button type="submit" class="btn-danger" onclick="return confirm('Delete this event?')">Delete</button>
@@ -86,7 +98,8 @@
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
-                </table>
+                    </table>
+                </div>
             <?php endif; ?>
         </main>
     </div>
