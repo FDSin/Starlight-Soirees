@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="../css/dashboard_style.css?">
+    <link rel="stylesheet" href="../css/dashboard_style.css?v=20260902-2">
 </head>
 <body>
     <?php require_once __DIR__ . '/../../sidebar.php'; ?>
@@ -41,6 +41,7 @@
                     <table class="table">
                     <thead>
                         <tr>
+                            <th class="table-id">Venue ID</th>
                             <th>Name</th>
                             <th>Location</th>
                             <th>Capacity</th>
@@ -51,6 +52,7 @@
                     <tbody>
                         <?php foreach ($venues as $venue): ?>
                             <tr>
+                                <td class="table-id">#<?= (int)$venue['venue_id'] ?></td>
                                 <td><?= htmlspecialchars($venue['venue_name']) ?></td>
                                 <td><?= htmlspecialchars($venue['location']) ?></td>
                                 <td><?= (int)$venue['max_capacity'] ?></td>

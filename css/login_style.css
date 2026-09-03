@@ -131,3 +131,25 @@ body {
     transform: translateY(1px);
     box-shadow: 0 4px 10px rgba(217, 119, 6, 0.2);
 }
+
+@media (max-width: 480px) {
+    body {
+        align-items: flex-start;
+        overflow-y: auto;
+        padding: 16px;
+    }
+
+    .login-card {
+        margin-top: 32px;
+        padding: 28px 20px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .login-card,
+    .btn-login,
+    .input-group input {
+        animation: none;
+        transition: none;
+    }
+}

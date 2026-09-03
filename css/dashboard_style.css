@@ -116,6 +116,14 @@ textarea {
     background: #f7fafc;
 }
 
+.table .table-id {
+    width: 1%;
+    min-width: 84px;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+}
+
 .table-scroll {
     width: 100%;
     overflow-x: auto;

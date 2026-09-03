@@ -38,7 +38,7 @@ if ($status !== '') { $sql .= ' AND e.event_status = :status'; $params['status']
 if ($dateFrom !== '') { $sql .= ' AND e.event_date >= :date_from'; $params['date_from'] = $dateFrom; }
 if ($dateTo !== '') { $sql .= ' AND e.event_date <= :date_to'; $params['date_to'] = $dateTo; }
 
-$sql .= ' ORDER BY e.event_date DESC, e.event_id DESC';
+$sql .= ' ORDER BY e.event_id ASC';
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $events = $stmt->fetchAll();

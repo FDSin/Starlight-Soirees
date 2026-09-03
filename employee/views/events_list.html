@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="../css/dashboard_style.css?">
+    <link rel="stylesheet" href="../css/dashboard_style.css?v=20260902-2">
 </head>
 <body>
     <?php require_once __DIR__ . '/../../sidebar.php'; ?>
@@ -64,6 +64,7 @@
                     <table class="table">
                     <thead>
                         <tr>
+                            <th class="table-id">Event ID</th>
                             <th>Event</th>
                             <th>Date</th>
                             <th>Guests</th>
@@ -76,6 +77,7 @@
                     <tbody>
                         <?php foreach ($events as $ev): ?>
                             <tr>
+                                <td class="table-id">#<?= (int)$ev['event_id'] ?></td>
                                 <td><?= htmlspecialchars($ev['title']) ?></td>
                                 <td><?= htmlspecialchars($ev['event_date']) ?></td>
                                 <td><?= (int)$ev['guest_count'] ?></td>

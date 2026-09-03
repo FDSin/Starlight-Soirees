@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="../css/dashboard_style.css?">
+    <link rel="stylesheet" href="../css/dashboard_style.css?v=20260902-2">
 </head>
 <body>
     <?php require_once __DIR__ . '/../../sidebar.php'; ?>
@@ -54,6 +54,8 @@
                     <table class="table">
                     <thead>
                         <tr>
+                            <th class="table-id">Payment ID</th>
+                            <th class="table-id">Event ID</th>
                             <th>Event</th>
                             <th>Total</th>
                             <th>Date</th>
@@ -64,7 +66,9 @@
                     <tbody>
                         <?php foreach ($payments as $payment): ?>
                             <tr>
-                                <td>#<?= (int)$payment['event_id'] ?> - <?= htmlspecialchars($payment['title']) ?></td>
+                                <td class="table-id">#<?= (int)$payment['payment_id'] ?></td>
+                                <td class="table-id">#<?= (int)$payment['event_id'] ?></td>
+                                <td><?= htmlspecialchars($payment['title']) ?></td>
                                 <td>$<?= number_format((float)$payment['total_amount'], 2) ?></td>
                                 <td><?= htmlspecialchars($payment['payment_date'] ?? '') ?></td>
                                 <td>

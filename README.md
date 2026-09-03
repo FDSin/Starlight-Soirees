@@ -1,37 +1,62 @@
-<h1><strong>Starlight Soirees</strong></h1>
+# Starlight Soirées
 
-A full-stack web-based management system developed for a wedding planning agency to centralize event, venue, catering, and payment management.
+A small PHP and MySQL event-management system for managing events, venues, catering packages, payments, a calendar, and printable reports.
 
-<h2><strong>Overview</strong></h2>
+## Main features
 
-Starlight Soirees replaces fragmented manual record-keeping with a centralized administrative platform. Staff can manage wedding events and related services, track client payments, monitor operations through a dashboard, and generate printable reports.
+- Employee login with session timeout
+- Event, venue, catering, and payment CRUD operations
+- Venue-capacity and assignment validation
+- Automatic event-price calculation
+- Receipt uploads for payments
+- Search and status/date filters
+- FullCalendar dashboard integration
+- Responsive desktop, tablet, and mobile layouts
 
-The system demonstrates practical use of CRUD operations, relational database design, server-side processing, input validation, and web-based administration.
+## Project structure
 
-<h2><strong>Key Features</strong></h2>
+```text
+css/                 Shared dashboard and login styles
+database/            Fresh schema and one-time legacy migration
+employee/            Authenticated controllers and reusable PHP helpers
+employee/views/      Server-rendered HTML/PHP templates
+images/              Local visual assets
+javascript/          Calendar and browser-side behavior
+check_auth.php       Shared session and timeout protection
+config.php           Shared event/payment options
+db.php               PDO database connection
+login.php            Employee authentication
+sidebar.php          Shared employee navigation
+```
 
-• Event Management — Manage wedding events, client details, schedules, and associated services. <br>
-• Venue Management — Manage venue information, capacity, and booking schedules. <br>
-• Catering Management — Organize catering packages and menu details. <br>
-• Payment Tracking — Record transactions, payment methods, and outstanding balances. <br>
-• Dashboard — View key operational and financial information at a glance. <br>
-• Reports — Generate and print consolidated operational records. <br>
-• Validation & Security — Uses client/server-side validation and prepared SQL statements. <br>
+Each controller loads `employee/bootstrap.php`, retrieves or changes data with PDO, prepares variables, and includes a template from `employee/views`.
 
-<h2><strong>Technologies Used</strong></h2> <br>
+## Local setup
 
-| Technology | Purpose |
-|------------|---------|
-| HTML | Webpage structure and forms |
-| CSS | Styling and responsive layouts |
-| JavaScript | Client-side interactions and validation |
-| PHP | Server-side logic and CRUD operations |
-| MySQL | Relational database management |
-| XAMPP | Local Apache and MySQL environment |
-| Visual Studio Code | Development environment |
+1. Start Apache and MySQL in XAMPP.
+2. Import `database/event_management.sql` into MySQL.
+3. Create an employee password hash:
 
+   ```powershell
+   C:\xampp\php\php.exe -r "echo password_hash('YourPassword', PASSWORD_DEFAULT), PHP_EOL;"
+   ```
 
-Project Type: University Portfolio Project <br>
-Focus: Web Development · Database Management · CRUD · PHP · MySQL <br>
+4. Insert an employee account in phpMyAdmin, using the generated hash in the `password` column:
 
-<i>Developed as part of a university web application and database project.</i>
+   ```sql
+   INSERT INTO users (username, password)
+   VALUES ('EmployeeName', 'PASTE_GENERATED_HASH_HERE');
+   ```
+
+5. Open the project through `http://localhost/.../login.php` rather than opening template files directly.
+
+The `.html` files inside `employee/views` contain PHP template expressions and are processed through their controller files.
+
+## Technology
+
+- PHP with PDO
+- MySQL
+- HTML and CSS
+- JavaScript
+- FullCalendar
+- XAMPP

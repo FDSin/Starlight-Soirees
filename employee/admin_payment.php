@@ -23,7 +23,7 @@ if ($search !== '') {
     $params['event_id'] = '%' . $search . '%';
 }
 if ($status !== '') { $sql .= ' AND p.payment_status = :status'; $params['status'] = $status; }
-$sql .= ' ORDER BY p.payment_date DESC, p.payment_id DESC';
+$sql .= ' ORDER BY p.payment_id ASC';
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $payments = $stmt->fetchAll();

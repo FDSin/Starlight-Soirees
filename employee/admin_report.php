@@ -14,10 +14,10 @@ try {
                LEFT JOIN venues v ON v.venue_id = e.venue_id
                LEFT JOIN menus m ON m.menu_id = e.menu_id';
     if ($from && $to) {
-        $stmt = $pdo->prepare($select . ' WHERE e.event_date BETWEEN :from AND :to ORDER BY e.event_date');
+        $stmt = $pdo->prepare($select . ' WHERE e.event_date BETWEEN :from AND :to ORDER BY e.event_id ASC');
         $stmt->execute(['from' => $from, 'to' => $to]);
     } else {
-        $stmt = $pdo->query($select . ' ORDER BY e.event_date');
+        $stmt = $pdo->query($select . ' ORDER BY e.event_id ASC');
     }
     $reportData = $stmt->fetchAll();
 } catch (Exception $e) {

@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delet
 $search = trim($_GET['search'] ?? '');
 $stmt = $pdo->prepare(
     'SELECT menu_id, package_name, price_per_person, description FROM menus
-     WHERE package_name LIKE :name OR description LIKE :description ORDER BY price_per_person'
+     WHERE package_name LIKE :name OR description LIKE :description ORDER BY menu_id ASC'
 );
 $stmt->execute(['name' => '%' . $search . '%', 'description' => '%' . $search . '%']);
 $menus = $stmt->fetchAll();

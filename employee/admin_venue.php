@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delet
 $search = trim($_GET['search'] ?? '');
 $stmt = $pdo->prepare(
     'SELECT venue_id, venue_name, max_capacity, venue_price, location
-     FROM venues WHERE venue_name LIKE :name OR location LIKE :location ORDER BY venue_name'
+     FROM venues WHERE venue_name LIKE :name OR location LIKE :location ORDER BY venue_id ASC'
 );
 $stmt->execute(['name' => '%' . $search . '%', 'location' => '%' . $search . '%']);
 $venues = $stmt->fetchAll();
