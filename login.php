@@ -50,6 +50,11 @@
     <body>
         <section class="login-card">
             <header class="login-header">
+                <img src="images/logo_ss.png" style="display: block; 
+                width: 180px; 
+                height: auto; 
+                max-width: 400px;  
+                margin: 0 auto;">
                 <h1>Starlight Soirées</h1>
             </header>
 
